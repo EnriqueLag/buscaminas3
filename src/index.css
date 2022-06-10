@@ -18,3 +18,8 @@ td {
     text-align: center;
 }
 
+.cell-open {
+    background-color: rgb(252, 252, 252);
+    font-weight:bold;
+}
+
