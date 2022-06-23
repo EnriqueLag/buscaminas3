@@ -1,6 +1,6 @@
 // Datos del tablero
-const row = 18;
-const cell = 18
+row = 18;
+cell = 18
 
 // Datos del juego
 const mines = Math.floor((row * cell) / 6);
@@ -96,39 +96,14 @@ function cellState(event) {
     // console.log("cIndex: ", cIndex);
     // console.log("rIndex: ", rIndex);
 
-    let isMine = detectMines(rIndex, cIndex);
+    let isMine = detectMine(rIndex, cIndex);
     console.log("Datos de la celda: ", rIndex, cIndex, isMine);
 
-    /*  
-        Si no hay ninguna mina descubrimos la celda
-        Y comprobamos las minas de alrededor
-        de lo contrario mostramos la mina y finalizamos el juego.
-    */
 
     if (isMine === false) {
         cell.style.backgroundColor = "rgb(250, 250, 250)";
 
-        // Comprobamos la fila anterior, actual y siguiente.
-        let checkRows = [rIndex - 1, rIndex, rIndex + 1];
-
-        for (checkRow in checkRows) {
-
-            let actualRow = checkRows[checkRow];
-            let actualCell = cIndex - 1;
-            console.log("Evaluando fila: ", actualRow);
-
-            for (let index = 0; index <= 2; index++) {
-
-                console.log("Evaluando la celda: ", actualRow, actualCell);
-
-                if (!(actualRow == rIndex && actualCell == cIndex)) {
-                    detectMines(actualRow, actualCell) ? nearbyMines++ : null;
-                }
-                actualCell++;
-            }
-
-            console.log("Minas alrededor: ", nearbyMines);
-        }
+        nearbyMines = numberOfMinesArrounCell(rIndex, cIndex, nearbyMines);
 
         console.log("Total de minas: ", nearbyMines);
 
@@ -139,6 +114,10 @@ function cellState(event) {
             cell.textContent = nearbyMines;
             cell.style.color = "red";
             cell.style.fontWeight = "bold";
+        } else {
+            console.log("No hay minas alrededor");
+            // Evaluamos las celdas adyacentes
+            numberOfMinesAdjacent(rIndex, cIndex, nearbyMines)
         }
 
     } else if (isMine === true) {
@@ -148,9 +127,14 @@ function cellState(event) {
         cell.textContent = "💣";
         alert("Has perdido");
     }
+//  gym + paseo ? cansado++ : feliz;
 }
 
-function detectMines(row, cell) {
+
+
+
+
+function detectMine(row, cell) {
     let isMine = false;
     // Comprobamos que la celda actual no sea una mina
     locationMines.forEach(function (mine) {
@@ -160,4 +144,118 @@ function detectMines(row, cell) {
         }
     });
     return isMine;
+}
+
+
+function numberOfMinesArrounCell(rIndex, cIndex, nearbyMines) {
+    // Comprobamos la fila anterior, actual y siguiente.
+    let checkRows = [rIndex - 1, rIndex, rIndex + 1];
+
+    for (checkRow in checkRows) {
+
+        let actualRow = checkRows[checkRow]; // fila actual
+        let actualCell = cIndex - 1; // celda actual
+
+        console.log("Evaluando fila: ", actualRow);
+
+        for (let index = 0; index <= 2; index++) {
+
+            console.log("Evaluando la celda: ", actualRow, actualCell);
+
+            // Evitamos que se evalué la celda a la que hemos echo click
+            if (!(actualRow == rIndex && actualCell == cIndex)) {
+                detectMine(actualRow, actualCell) ? nearbyMines++ : null;
+            }
+            actualCell++;
+        }
+
+        console.log("Minas alrededor: ", nearbyMines);
+
+    }
+    return nearbyMines;
+}
+
+function numberOfMinesAdjacent(rIndex, cIndex) {
+    let checkRows = [rIndex - 1, rIndex, rIndex + 1];
+
+    let superiorRow = checkRows[0];
+    let actualRow = checkRows[1];
+    let inferiorRow = checkRows[2];
+
+    let checkCells = [cIndex - 1, cIndex, cIndex + 1];
+    let leftCell = checkCells[0];
+    let actualCell = checkCells[1];
+    let rightCell = checkCells[2];
+
+    // Comprobamos las celda superior
+    let superiorCellMines = numberOfMinesArrounCell(superiorRow, actualCell,0);
+    // Si no hay minas al rededor de la celda subyacente 
+    // Despejamos la celda
+
+    // Comprobamos la celda izquierda y derecha
+    let leftCellMines = numberOfMinesArrounCell(actualRow, leftCell, 0);
+    let rightCellMines = numberOfMinesArrounCell(actualRow, rightCell, 0);
+
+    // Comprobamos la celda inferior
+    let inferiorCellMines = numberOfMinesArrounCell(inferiorRow, actualCell, 0);
+
+    console.log("---------------------");
+    console.log("Minas en las celdas adyacentes de ", checkRows[1], cIndex);
+    console.log("Minas en la celda superior: ", [superiorRow, actualCell] , superiorCellMines);
+    console.log("Minas en la celda izquierda: ",[actualRow, leftCell] , leftCellMines);
+    console.log("Minas en la celda derecha: ",[actualRow, rightCell] , rightCellMines);
+    console.log("Minas en la celda inferior: ",[inferiorRow, actualCell] , inferiorCellMines);
+   
+
+    // Capturamos las filas y celdas del tablero
+    let tbody = document.querySelector("tbody");
+    let rows = tbody.querySelectorAll("tr");
+    console.log("rows: ", rows);
+    let boardRows = [rows[superiorRow], rows[actualRow], rows[inferiorRow]];
+
+    let boardSuperiorCell = boardRows[0].querySelectorAll("td")[actualCell];
+    if(superiorCellMines > 0) {
+        boardSuperiorCell.textContent = superiorCellMines;
+        boardSuperiorCell.style.color = "red";
+        boardSuperiorCell.style.fontWeight = "bold";
+    }else {
+        console.log("------------");
+        console.log(superiorRow, actualCell)
+        numberOfMinesAdjacent(superiorRow, actualCell)
+    }
+    boardSuperiorCell.style.backgroundColor = "rgb(250, 250, 250)";
+    
+    let boardLeftCell = boardRows[1].querySelectorAll("td")[leftCell];
+    if(leftCellMines > 0) {
+        boardLeftCell.textContent = leftCellMines;
+        boardLeftCell.style.color = "red";
+        boardLeftCell.style.fontWeight = "bold";
+    } else {
+        console.log("------------");
+        console.log(actualRow, leftCell)
+        numberOfMinesAdjacent(actualRow, leftCell)
+    }
+    boardLeftCell.style.backgroundColor = "rgb(250, 250, 250)";
+    
+    let boardRightCells = boardRows[1].querySelectorAll("td")[rightCell];
+    if(rightCellMines > 0) {
+        boardRightCells.textContent = rightCellMines;
+        boardRightCells.style.color = "red";
+        boardRightCells.style.fontWeight = "bold";
+    }
+    boardRightCells.style.backgroundColor = "rgb(250, 250, 250)";
+
+    let boardInferiorCells = boardRows[2].querySelectorAll("td")[actualCell];
+    if(inferiorCellMines > 0) {
+        boardInferiorCells.textContent = inferiorCellMines;
+        boardInferiorCells.style.color = "red";
+        boardInferiorCells.style.fontWeight = "bold";
+    }
+    boardInferiorCells.style.backgroundColor = "rgb(250, 250, 250)";
+
+    console.log("Filas a evaluar: ", boardRows);
+
+    // TODO: Evitar que siga calculando las celdas que no existen
+    // TODO: Evitar que se pueda hacer click en las celdas que ya están despejadas
+    // TODO: Pasar la función a ciclos;
 }
