@@ -1,4 +1,4 @@
-table{
+table {
     border: 1px solid #ccc;
     padding: 0.5em;
 }
@@ -11,15 +11,22 @@ td {
     min-height: 1.5em;
     max-height: 1.5em;
     height: 1.5em;
-    
-    border: 1px solid #ccc;
-    background-color: #eee;
 
     text-align: center;
 }
 
-.cell-open {
-    background-color: rgb(252, 252, 252);
-    font-weight:bold;
+.js-cell-undiscovered {
+    border: 1px solid #ccc;
+    background-color: #eee;
 }
 
+.js-cell-discovered {
+    color: red;
+    font-weight: bold;
+    cursor: initial;
+}
+
+.cell-open {
+    background-color: rgb(252, 252, 252);
+    font-weight: bold;
+}

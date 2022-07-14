@@ -8,13 +8,16 @@ locationMines = [];
 oldCell = null;
 
 // Creación del tablero
+table = document.querySelector("table");
+table.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+});
 thead = document.querySelector("thead");
 tbody = document.querySelector("tbody");
 
 for (let headCell = 0; headCell <= cell; headCell++) {
     let td = document.createElement("td");
     td.textContent = headCell == 0 ? " " : headCell;
-
     thead.appendChild(td);
 }
 
@@ -23,12 +26,14 @@ for (let rows = 0; rows <= row; rows++) {
 
     for (let cells = 0; cells <= cell; cells++) {
         let td = document.createElement('td');
-
+        
         if (cells == 0) {
             td.textContent = rows;
         } else {
             td.style.cursor = "pointer"
             td.addEventListener('click', cellState);
+            td.addEventListener('mouseup', cellOptions);
+            td.classList.add('js-cell-undiscovered');
         }
 
 
@@ -112,9 +117,9 @@ function cellState(event) {
         // en caso contrario mostramos 0 en azul.
         if (nearbyMines > 0) {
             cell.textContent = nearbyMines;
-            cell.style.color = "red";
-            cell.style.fontWeight = "bold";
-            cell.style.cursor = "initial";
+
+            cell.classList.remove('js-cell-undiscovered');
+            cell.classList.add('js-cell-discovered');
         } else {
             // // console.log("No hay minas alrededor");
             // Evaluamos las celdas adyacentes
@@ -274,7 +279,7 @@ function numberOfMinesAdjacent(rIndex, cIndex) {
         if (minesDetect.superiorRow[0] > 0) {
             boardSuperiorCell.textContent = minesDetect.superiorRow[0];
         } else {
-             numberOfMinesAdjacent(minesDetect.superiorRow[1], minesDetect.superiorRow[2]);
+            numberOfMinesAdjacent(minesDetect.superiorRow[1], minesDetect.superiorRow[2]);
             cellsEmpty.push([minesDetect.superiorRow[1], minesDetect.superiorRow[2]]);
         }
     }
@@ -287,6 +292,7 @@ function numberOfMinesAdjacent(rIndex, cIndex) {
         boardInferiorCell.style.cursor = "initial";
 
         boardInferiorCell.removeEventListener("click", cellState);
+
 
         if (minesDetect.inferiorRow[0] > 0) {
             boardInferiorCell.textContent = minesDetect.inferiorRow[0];
@@ -325,7 +331,7 @@ function numberOfMinesAdjacent(rIndex, cIndex) {
             boardSelectedRightCell.textContent = minesDetect.rightCell[0];
         } else {
             cellsEmpty.push([minesDetect.rightCell[1], minesDetect.rightCell[2]]);
-           // numberOfMinesAdjacent(minesDetect.rightCell[1], minesDetect.rightCell[2]);
+            // numberOfMinesAdjacent(minesDetect.rightCell[1], minesDetect.rightCell[2]);
         }
     }
 
@@ -334,3 +340,39 @@ function numberOfMinesAdjacent(rIndex, cIndex) {
     // TODO: Ejemplo : Descubrir hacia la arriba y hacia la izquierda, arriba y derecha, abajo izquierda y derecha.
     // TODO: pero al  hacer ariba y abajo o izquierda y derecha, entra en bucle infinito.
 }
+
+function cellOptions(event) {
+
+    console.log(event)
+    let cell = event.target;
+    cellContent = cell.textContent;
+    
+    // comprobamos si es el botón derecho
+    if (event.button == 2) {
+
+        if(cellContent == "" && cell.classList[0] == "td.js-cell-undiscovered" )  {
+            cell.textContent = "🚩";
+            
+        } else if (cellContent == "🚩") {
+            cell.textContent = "❓";
+
+        } else if (cellContent == "❓") {
+            cell.textContent = "";
+            
+        }
+    }
+
+}
+
+/*
+let state = 0;
+let strings = ["", "F", "?"];
+let len = strings.length;
+
+for(let i = 0; i < 10; i++) {
+  let index = state++ % len;
+  if(state === len) state = 0;
+  console.log(strings[index]);
+}
+
+*/
