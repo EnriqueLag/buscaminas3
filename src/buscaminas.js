@@ -58,7 +58,7 @@ for (let index = 0; index < mines; index++) {
     });
     locationMines.push([mRow, mCell]);
 }
-console.log("localización de minas: ", locationMines);
+// // console.log("localización de minas: ", locationMines);
 
 
 // Función para calcular el estado de las celdas
@@ -66,7 +66,7 @@ console.log("localización de minas: ", locationMines);
 function cellState(event) {
     // Una vez que se aga clic ya nunca se podrá volver a clicar.
     event.target.removeEventListener('click', cellState);
-    console.log(locationMines);
+    // // console.log(locationMines);
 
     // Comprobamos si había una celda pulsada anteriormente
     if (oldCell != null) {
@@ -89,15 +89,15 @@ function cellState(event) {
     let cIndex = event.target.cellIndex;
     let rIndex = parent.rowIndex;
 
-    // console.log("siblingsPrevius: ", siblingsPrevius);
-    // console.log("parent: ", parent);
-    // console.log("siblingsNext: ",siblingsNext);
+    // // // console.log("siblingsPrevius: ", siblingsPrevius);
+    // // // console.log("parent: ", parent);
+    // // // console.log("siblingsNext: ",siblingsNext);
 
-    // console.log("cIndex: ", cIndex);
-    // console.log("rIndex: ", rIndex);
+    // // // console.log("cIndex: ", cIndex);
+    // // // console.log("rIndex: ", rIndex);
 
     let isMine = detectMine(rIndex, cIndex);
-    console.log("Datos de la celda: ", rIndex, cIndex, isMine);
+    // // console.log("Datos de la celda: ", rIndex, cIndex, isMine);
 
 
     if (isMine === false) {
@@ -105,7 +105,7 @@ function cellState(event) {
 
         nearbyMines = numberOfMinesArrounCell(rIndex, cIndex, nearbyMines);
 
-        console.log("Total de minas: ", nearbyMines);
+        // // console.log("Total de minas: ", nearbyMines);
 
         // Si existen minas al rededor de la celda
         // mostramos el número de minas en rojo
@@ -114,24 +114,24 @@ function cellState(event) {
             cell.textContent = nearbyMines;
             cell.style.color = "red";
             cell.style.fontWeight = "bold";
+            cell.style.cursor = "initial";
         } else {
-            console.log("No hay minas alrededor");
+            // // console.log("No hay minas alrededor");
             // Evaluamos las celdas adyacentes
+
             numberOfMinesAdjacent(rIndex, cIndex, nearbyMines)
         }
 
     } else if (isMine === true) {
-        console.log("¡Has perdido!");
+        // // console.log("¡Has perdido!");
         cell.style.backgroundColor = "red";
         cell.style.border = "inherit";
         cell.textContent = "💣";
+        console.warn("¡Has perdido!");
         alert("Has perdido");
     }
-//  gym + paseo ? cansado++ : feliz;
+    //  gym + paseo ? cansado++ : feliz;
 }
-
-
-
 
 
 function detectMine(row, cell) {
@@ -140,122 +140,197 @@ function detectMine(row, cell) {
     locationMines.forEach(function (mine) {
         if (mine[0] === row && mine[1] === cell) {
             isMine = true;
-            console.log("Mina localizada en: ", mine);
+            // // console.log("Mina localizada en: ", mine);
         }
     });
     return isMine;
 }
 
-
 function numberOfMinesArrounCell(rIndex, cIndex, nearbyMines) {
+    console.log("Ejecutando función numberOfMinesArrounCell");
     // Comprobamos la fila anterior, actual y siguiente.
     let checkRows = [rIndex - 1, rIndex, rIndex + 1];
 
     for (checkRow in checkRows) {
 
+
         let actualRow = checkRows[checkRow]; // fila actual
         let actualCell = cIndex - 1; // celda actual
 
-        console.log("Evaluando fila: ", actualRow);
+        // console.log("Evaluando fila: ", actualRow);
 
-        for (let index = 0; index <= 2; index++) {
+        if (actualRow >= 0 && actualRow < row) {
+            for (let index = 0; index <= 2; index++) {
 
-            console.log("Evaluando la celda: ", actualRow, actualCell);
+                if (actualCell >= 0 && actualCell < cell) {
 
-            // Evitamos que se evalué la celda a la que hemos echo click
-            if (!(actualRow == rIndex && actualCell == cIndex)) {
-                detectMine(actualRow, actualCell) ? nearbyMines++ : null;
+                    // console.log("Evaluando la celda: ", actualRow, actualCell);
+
+                    if (!(actualRow == rIndex && actualCell == cIndex)) {
+                        detectMine(actualRow, actualCell) ? nearbyMines++ : null;
+                    }
+                    actualCell++;
+                }
+
             }
-            actualCell++;
         }
 
-        console.log("Minas alrededor: ", nearbyMines);
+
+
+        // // console.log("Minas alrededor: ", nearbyMines);
 
     }
     return nearbyMines;
 }
 
 function numberOfMinesAdjacent(rIndex, cIndex) {
+    console.log("Ejecutando función numberOfMinesAdjacent");
     let checkRows = [rIndex - 1, rIndex, rIndex + 1];
 
-    let superiorRow = checkRows[0];
-    let actualRow = checkRows[1];
-    let inferiorRow = checkRows[2];
-
     let checkCells = [cIndex - 1, cIndex, cIndex + 1];
-    let leftCell = checkCells[0];
-    let actualCell = checkCells[1];
-    let rightCell = checkCells[2];
 
-    // Comprobamos las celda superior
-    let superiorCellMines = numberOfMinesArrounCell(superiorRow, actualCell,0);
-    // Si no hay minas al rededor de la celda subyacente 
-    // Despejamos la celda
+    // let superiorRow = checkRows[0];
+    // let actualRow = checkRows[1];
+    // let inferiorRow = checkRows[2];
 
-    // Comprobamos la celda izquierda y derecha
-    let leftCellMines = numberOfMinesArrounCell(actualRow, leftCell, 0);
-    let rightCellMines = numberOfMinesArrounCell(actualRow, rightCell, 0);
+    // let leftCell = checkCells[0];
+    // let actualCell = checkCells[1];
+    // let rightCell = checkCells[2];
 
-    // Comprobamos la celda inferior
-    let inferiorCellMines = numberOfMinesArrounCell(inferiorRow, actualCell, 0);
+    // // Comprobamos las celda superior
+    // let superiorCellMines = numberOfMinesArrounCell(superiorRow, actualCell, 0);
+    // // Si no hay minas al rededor de la celda subyacente 
+    // // Despejamos la celda
 
-    console.log("---------------------");
-    console.log("Minas en las celdas adyacentes de ", checkRows[1], cIndex);
-    console.log("Minas en la celda superior: ", [superiorRow, actualCell] , superiorCellMines);
-    console.log("Minas en la celda izquierda: ",[actualRow, leftCell] , leftCellMines);
-    console.log("Minas en la celda derecha: ",[actualRow, rightCell] , rightCellMines);
-    console.log("Minas en la celda inferior: ",[inferiorRow, actualCell] , inferiorCellMines);
-   
+    // // Comprobamos la celda izquierda y derecha
+    // let leftCellMines = numberOfMinesArrounCell(actualRow, leftCell, 0);
+    // let rightCellMines = numberOfMinesArrounCell(actualRow, rightCell, 0);
+
+    // // Comprobamos la celda inferior
+    // let inferiorCellMines = numberOfMinesArrounCell(inferiorRow, actualCell, 0);
+
+    let minesDetect = {
+        superiorRow: null,
+        inferiorRow: null,
+        leftCell: null,
+        rightCell: null
+    };
+
+    // recorremos las filas
+    for (let rIndex = 0; rIndex < 3; rIndex++) {
+
+
+        if (checkRows[rIndex] >= 0 && checkRows[rIndex] <= row) {
+
+            // recorremos las celdas
+            for (let cIndex = 0; cIndex < 3; cIndex++) {
+
+
+                if (checkCells[cIndex] > 0 && checkCells[cIndex] <= cell) {
+
+
+                    let actualRow = checkRows[rIndex];
+                    let actualCell = checkCells[cIndex];
+
+                    let results = numberOfMinesArrounCell(actualRow, actualCell, 0);
+
+                    // Evaluando las celdas superior, inferior, izquierda y derecha
+
+
+                    // Comprobamos celdas izquierda y derecha
+
+                    console.log("Evaluando celda: ", actualRow, actualCell);
+
+                    rIndex == 0 && cIndex == 1 ? minesDetect.superiorRow = [results, actualRow, actualCell] : rIndex == 2 && cIndex == 1 ? minesDetect.inferiorRow = [results, actualRow, actualCell] : null;
+                    rIndex == 1 && cIndex == 0 ? minesDetect.leftCell = [results, actualRow, actualCell] : rIndex == 1 && cIndex == 2 ? minesDetect.rightCell = [results, actualRow, actualCell] : null;
+                }
+
+            }
+        }
+
+    }
+    console.log("Total de evaluaciones: ", minesDetect);
+
+    // comprobamos si el valor del objeto es null
+    // si es null, estamos llamando a una celda inexistente.
 
     // Capturamos las filas y celdas del tablero
     let tbody = document.querySelector("tbody");
     let rows = tbody.querySelectorAll("tr");
-    console.log("rows: ", rows);
-    let boardRows = [rows[superiorRow], rows[actualRow], rows[inferiorRow]];
+    // // // console.log("rows: ", rows);
 
-    let boardSuperiorCell = boardRows[0].querySelectorAll("td")[actualCell];
-    if(superiorCellMines > 0) {
-        boardSuperiorCell.textContent = superiorCellMines;
-        boardSuperiorCell.style.color = "red";
+    cellsEmpty = [];
+
+    if (minesDetect.superiorRow != null) {
+        boardSuperiorCell = rows[minesDetect.superiorRow[1]].querySelectorAll("td")[minesDetect.superiorRow[2]];
+        boardSuperiorCell.style.backgroundColor = "rgb(252, 252, 252)";
         boardSuperiorCell.style.fontWeight = "bold";
-    }else {
-        console.log("------------");
-        console.log(superiorRow, actualCell)
-        numberOfMinesAdjacent(superiorRow, actualCell)
-    }
-    boardSuperiorCell.style.backgroundColor = "rgb(250, 250, 250)";
-    
-    let boardLeftCell = boardRows[1].querySelectorAll("td")[leftCell];
-    if(leftCellMines > 0) {
-        boardLeftCell.textContent = leftCellMines;
-        boardLeftCell.style.color = "red";
-        boardLeftCell.style.fontWeight = "bold";
-    } else {
-        console.log("------------");
-        console.log(actualRow, leftCell)
-        numberOfMinesAdjacent(actualRow, leftCell)
-    }
-    boardLeftCell.style.backgroundColor = "rgb(250, 250, 250)";
-    
-    let boardRightCells = boardRows[1].querySelectorAll("td")[rightCell];
-    if(rightCellMines > 0) {
-        boardRightCells.textContent = rightCellMines;
-        boardRightCells.style.color = "red";
-        boardRightCells.style.fontWeight = "bold";
-    }
-    boardRightCells.style.backgroundColor = "rgb(250, 250, 250)";
+        boardSuperiorCell.style.color = "red";
+        boardSuperiorCell.style.border = "none";
+        boardSuperiorCell.style.cursor = "initial";
 
-    let boardInferiorCells = boardRows[2].querySelectorAll("td")[actualCell];
-    if(inferiorCellMines > 0) {
-        boardInferiorCells.textContent = inferiorCellMines;
-        boardInferiorCells.style.color = "red";
-        boardInferiorCells.style.fontWeight = "bold";
+        boardSuperiorCell.removeEventListener("click", cellState);
+
+        if (minesDetect.superiorRow[0] > 0) {
+            boardSuperiorCell.textContent = minesDetect.superiorRow[0];
+        } else {
+             numberOfMinesAdjacent(minesDetect.superiorRow[1], minesDetect.superiorRow[2]);
+            cellsEmpty.push([minesDetect.superiorRow[1], minesDetect.superiorRow[2]]);
+        }
     }
-    boardInferiorCells.style.backgroundColor = "rgb(250, 250, 250)";
+    if (minesDetect.inferiorRow != null) {
+        boardInferiorCell = rows[minesDetect.inferiorRow[1]].querySelectorAll("td")[minesDetect.inferiorRow[2]];
+        boardInferiorCell.style.backgroundColor = "rgb(252, 252, 252)";
+        boardInferiorCell.style.fontWeight = "bold";
+        boardInferiorCell.style.color = "red";
+        boardInferiorCell.style.border = "none";
+        boardInferiorCell.style.cursor = "initial";
 
-    console.log("Filas a evaluar: ", boardRows);
+        boardInferiorCell.removeEventListener("click", cellState);
 
-    // TODO: Evitar que siga calculando las celdas que no existen
-    // TODO: Evitar que se pueda hacer click en las celdas que ya están despejadas
+        if (minesDetect.inferiorRow[0] > 0) {
+            boardInferiorCell.textContent = minesDetect.inferiorRow[0];
+        } else {
+            cellsEmpty.push([minesDetect.inferiorRow[1], minesDetect.inferiorRow[2]]);
+        }
+    }
+    if (minesDetect.leftCell != null) {
+        boardSelectedLeftCell = rows[minesDetect.leftCell[1]].querySelectorAll("td")[minesDetect.leftCell[2]];
+        boardSelectedLeftCell.style.backgroundColor = "rgb(252, 252, 252)";
+        boardSelectedLeftCell.style.fontWeight = "bold";
+        boardSelectedLeftCell.style.color = "red";
+        boardSelectedLeftCell.style.border = "none";
+        boardSelectedLeftCell.style.cursor = "initial";
+
+        boardSelectedLeftCell.removeEventListener("click", cellState);
+
+        if (minesDetect.leftCell[0] > 0) {
+            boardSelectedLeftCell.textContent = minesDetect.leftCell[0];
+        } else {
+            cellsEmpty.push([minesDetect.leftCell[1], minesDetect.leftCell[2]]);
+            numberOfMinesAdjacent(minesDetect.leftCell[1], minesDetect.leftCell[2]);
+        }
+    }
+    if (minesDetect.rightCell != null) {
+        boardSelectedRightCell = rows[minesDetect.rightCell[1]].querySelectorAll("td")[minesDetect.rightCell[2]];
+        boardSelectedRightCell.style.backgroundColor = "rgb(252, 252, 252)";
+        boardSelectedRightCell.style.fontWeight = "bold";
+        boardSelectedRightCell.style.color = "red";
+        boardSelectedRightCell.style.border = "none";
+        boardSelectedRightCell.style.cursor = "initial";
+
+        boardSelectedRightCell.removeEventListener("click", cellState);
+
+        if (minesDetect.rightCell[0] > 0) {
+            boardSelectedRightCell.textContent = minesDetect.rightCell[0];
+        } else {
+            cellsEmpty.push([minesDetect.rightCell[1], minesDetect.rightCell[2]]);
+           // numberOfMinesAdjacent(minesDetect.rightCell[1], minesDetect.rightCell[2]);
+        }
+    }
+
     // TODO: Pasar la función a ciclos;
+    // TODO: Averiguar porque al ejecutar el descubrimiento de las celdas, el eje puesto entra en un bucle infinito.
+    // TODO: Ejemplo : Descubrir hacia la arriba y hacia la izquierda, arriba y derecha, abajo izquierda y derecha.
+    // TODO: pero al  hacer ariba y abajo o izquierda y derecha, entra en bucle infinito.
 }
