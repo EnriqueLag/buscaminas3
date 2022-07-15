@@ -13,20 +13,30 @@ td {
     height: 1.5em;
 
     text-align: center;
+    border: 1px solid #ccc;
 }
 
 .js-cell-undiscovered {
-    border: 1px solid #ccc;
+
     background-color: #eee;
+    cursor: pointer;
 }
 
 .js-cell-discovered {
     color: red;
     font-weight: bold;
-    cursor: initial;
+    cursor:auto;
+    border: 1px solid rgb(239, 239, 239);
 }
 
-.cell-open {
-    background-color: rgb(252, 252, 252);
-    font-weight: bold;
+.js-cell-selected{
+    border: 1px solid green;
+}
+
+.js-cell-mine {
+    background-color: red;
+}
+
+.js-cell-mine::before {
+    content: "💣";
 }
