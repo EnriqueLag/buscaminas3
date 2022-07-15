@@ -280,7 +280,7 @@ function numberOfMinesAdjacent(rIndex, cIndex) {
 
     // TODO: Pasar la función a ciclos;
     // TODO: Averiguar porque al ejecutar el descubrimiento de las celdas, el eje puesto entra en un bucle infinito.
-    // TODO: Ejemplo : Descubrir hacia la arriba y hacia la izquierda, arriba y derecha, abajo izquierda y derecha.
+    // TODO: Ejemplo: Descubrir hacia la arriba y hacia la izquierda, arriba y derecha, abajo izquierda y derecha.
     // TODO: pero al  hacer ariba y abajo o izquierda y derecha, entra en bucle infinito.
 }
 
