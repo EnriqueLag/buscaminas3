@@ -1,9 +1,14 @@
 // Datos del tablero
-row = 18;
-cell = 18;
+const _CONFIG_ROWS = 18;
+const _CONFIG_CELLS = 18;
 
 // Datos del juego
-const mines = Math.floor((row * cell) / 6);
+const _CONFIG_TOTAL_CELLS = _CONFIG_ROWS * _CONFIG_CELLS;
+const _CONFIG_MINES = Math.floor((_CONFIG_ROWS * _CONFIG_CELLS) / 6);
+
+discoveredCells = 0;
+flags = _CONFIG_MINES;
+
 locationMines = [];
 oldCell = null;
 
@@ -15,16 +20,21 @@ table.addEventListener('contextmenu', (event) => {
 thead = document.querySelector("thead");
 tbody = document.querySelector("tbody");
 
-for (let headCell = 0; headCell <= cell; headCell++) {
+
+let displayMinesCnt = document.querySelector("#scoreBoard").querySelector("section").querySelector("div");
+displayMinesCnt.textContent = "💣 " + flags;
+
+
+for (let headCell = 0; headCell <= _CONFIG_CELLS; headCell++) {
     let td = document.createElement("td");
     td.textContent = headCell == 0 ? " " : headCell;
     thead.appendChild(td);
 }
 
-for (let rows = 0; rows <= row; rows++) {
+for (let rows = 0; rows <= _CONFIG_ROWS; rows++) {
     let tr = document.createElement('tr');
 
-    for (let cells = 0; cells <= cell; cells++) {
+    for (let cells = 0; cells <= _CONFIG_CELLS; cells++) {
         let td = document.createElement('td');
 
         if (cells == 0) {
@@ -43,10 +53,10 @@ for (let rows = 0; rows <= row; rows++) {
 
 // Creación de minas
 
-for (let index = 0; index < mines; index++) {
+for (let index = 0; index < _CONFIG_MINES; index++) {
 
-    let mRow = Math.floor(Math.random() * row);
-    let mCell = Math.floor(Math.random() * cell);
+    let mRow = Math.floor(Math.random() * _CONFIG_ROWS);
+    let mCell = Math.floor(Math.random() * _CONFIG_CELLS);
 
     // Si la posición es 0, ajustamos la posición
     mCell == 0 ? mCell = 1 : mCell;
@@ -55,8 +65,8 @@ for (let index = 0; index < mines; index++) {
     // en el caso de que sea así, recalculamos la posición
     locationMines.forEach(function (mine) {
         if (mine[0] === mRow && mine[1] === mCell) {
-            mRow = Math.floor(Math.random() * row);
-            mCell = Math.floor(Math.random() * cell);
+            mRow = Math.floor(Math.random() * _CONFIG_ROWS);
+            mCell = Math.floor(Math.random() * _CONFIG_CELLS);
         }
     });
     locationMines.push([mRow, mCell]);
@@ -152,10 +162,10 @@ function numberOfMinesAroundCell(rIndex, cIndex, nearbyMines) {
         let actualRow = checkRows[checkRow]; // fila actual
         let actualCell = cIndex - 1; // celda actual
 
-        if (actualRow >= 0 && actualRow < row) {
+        if (actualRow >= 0 && actualRow < _CONFIG_ROWS) {
             for (let index = 0; index <= 2; index++) {
 
-                if (actualCell >= 0 && actualCell < cell) {
+                if (actualCell >= 0 && actualCell < _CONFIG_CELLS) {
 
                     if (!(actualRow == rIndex && actualCell == cIndex)) {
                         detectMine(actualRow, actualCell) ? nearbyMines++ : null;
@@ -186,12 +196,12 @@ function numberOfMinesAdjacent(rIndex, cIndex) {
     // recorremos las filas
     for (let rIndex = 0; rIndex < 3; rIndex++) {
 
-        if (checkRows[rIndex] >= 0 && checkRows[rIndex] <= row) {
+        if (checkRows[rIndex] >= 0 && checkRows[rIndex] <= _CONFIG_ROWS) {
 
             // recorremos las celdas
             for (let cIndex = 0; cIndex < 3; cIndex++) {
 
-                if (checkCells[cIndex] > 0 && checkCells[cIndex] <= cell) {
+                if (checkCells[cIndex] > 0 && checkCells[cIndex] <= _CONFIG_CELLS) {
 
                     let actualRow = checkRows[rIndex];
                     let actualCell = checkCells[cIndex];
@@ -279,9 +289,10 @@ function numberOfMinesAdjacent(rIndex, cIndex) {
     }
 
     // TODO: Pasar la función a ciclos;
+
     // TODO: Averiguar porque al ejecutar el descubrimiento de las celdas, el eje puesto entra en un bucle infinito.
     // TODO: Ejemplo: Descubrir hacia la arriba y hacia la izquierda, arriba y derecha, abajo izquierda y derecha.
-    // TODO: pero al  hacer ariba y abajo o izquierda y derecha, entra en bucle infinito.
+    // TODO: pero al  hacer arriba y abajo o izquierda y derecha, entra en bucle infinito.
 }
 
 function cellOptions(event) {
@@ -293,10 +304,14 @@ function cellOptions(event) {
     if (event.button == 2) {
 
         if (cellContent == "" && cell.classList[0] == "js-cell-undiscovered") {
-            cell.classList.add("js-cell-options");
-            cell.textContent = "🚩";
 
+            let setFlag = calculateFlags(false);
+            if (setFlag) {
+                cell.classList.add("js-cell-options");
+                cell.textContent = "🚩";
+            }
         } else if (cellContent == "🚩") {
+            calculateFlags(true);
             cell.textContent = "❓";
 
         } else if (cellContent == "❓") {
@@ -304,6 +319,22 @@ function cellOptions(event) {
             cell.classList.remove("js-cell-options");
         }
     }
+}
+
+function calculateFlags(add) {
+
+    add ? flags++ : flags--;
+
+    // if ( flags < 0 ) { 
+    //     flags = 0;
+    //     return false; 
+    // }
+
+    flags < 0 ? (flags = 0, false ) : null;
+
+    let displayMinesCnt = document.querySelector("#scoreBoard").querySelector("section").querySelector("div");
+    displayMinesCnt.textContent = "Total de 💣 " + flags;
+    return true;
 }
 
 /*
