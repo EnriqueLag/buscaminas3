@@ -1,6 +1,6 @@
 // Datos del tablero
-const _CONFIG_ROWS = 18;
-const _CONFIG_CELLS = 18;
+const _CONFIG_ROWS = 4;
+const _CONFIG_CELLS = 4;
 
 // Datos del juego
 const _CONFIG_TOTAL_CELLS = _CONFIG_ROWS * _CONFIG_CELLS;
@@ -79,23 +79,31 @@ for (let index = 0; index < _CONFIG_MINES; index++) {
         }
     });
     locationMines.push([mRow, mCell]);
+
+
 }
 
 // Función para calcular el estado de las celdas
 
-function cellState(event) {
+function cellState(event, cell) {
 
     // Comprobamos el estado de la celda si esta con opciones o no
-    let cell = event.target;
+    if (event) {
+        cell = event.target;
+        console.warn("Ejecutando cellState mediante el evento: " + event.type);
+    } else {
+        console.warn("ejecutando cellState sin evento");
+    }
+
     let cellOptions = false;
     cell.classList.forEach(cellState => {
-        if (cellState == "js-cell-options") {
+        if (cellState == "js-cell-options" || cellState == "js-cell-discovered") {
             cellOptions = true;
+
         }
     });
 
     if (!cellOptions) {
-
         // Comprobamos si el juego ha empezado
         !gameStarted ? (startCounter(), gameStarted = true) : null;
 
@@ -105,23 +113,25 @@ function cellState(event) {
 
         let minesAround = 0;
 
-        let cellDOMparent = cell.parentNode;
+        let cellRowParentDOM = cell.parentNode;
         let cellPositionDOM = cell.cellIndex;
-        let rowPositionDOM = cellDOMparent.rowIndex;
+        let rowPositionDOM = cellRowParentDOM.rowIndex;
 
         let isMine = detectMine(rowPositionDOM, cellPositionDOM);
 
         if (isMine === false) {
 
-            minesAround = numberOfMinesAroundCell(rowPositionDOM, cellPositionDOM);
+            minesAround = checkMinesAround(rowPositionDOM, cellPositionDOM);
 
-            minesAround > 0 ? cell.textContent = minesAround : numberOfMinesAdjacent(rowPositionDOM, cellPositionDOM, minesAround);
+            // minesAround > 0 ? cell.textContent = minesAround : numberOfMinesAdjacent(rowPositionDOM, cellPositionDOM, minesAround);
+            minesAround > 0 ? cell.textContent = minesAround : checkMinesEmpty(rowPositionDOM, cellPositionDOM, cellRowParentDOM);
 
         } else if (isMine === true) {
             cell.classList.add("js-cell-mine");
-            stopCounter();
-            console.warn("¡Has perdido!");
-            alert("Has perdido");
+
+            finalGame("mine");
+
+
         }
         //  gym + paseo ? cansado++ : feliz;
     }
@@ -144,11 +154,19 @@ function discoverCell(cell) {
 
     // Quitamos una celda al total de celdas a descubrir
     cellsUndiscovered--;
+
     console.log("Celdas a descubrir: " + cellsUndiscovered);
 
 
     cell.removeEventListener('click', cellState);
     cell.removeEventListener('mouseup', cellOptions);
+
+    if (cellsUndiscovered == 0) {
+        finalGame("cell");
+
+        
+
+    }
 }
 
 function selectCell(cell) {
@@ -160,26 +178,27 @@ function selectCell(cell) {
     cell.classList.add("js-cell-selected");
 }
 
-function numberOfMinesAroundCell(rowPositionDOM, cellPositionDOM) {
+function checkMinesAround(rowPositionDOM, cellPositionDOM) {
     //console.log("Ejecutando función numberOfMinesArrounCell");
     // Comprobamos la fila anterior, actual y siguiente.
 
     let minesAround = 0;
     let checkRows = [rowPositionDOM - 1, rowPositionDOM, rowPositionDOM + 1];
 
-    checkRows.map( (checkRow) => {
-        
+    checkRows.map((checkRow) => {
+
         let actualRow = checkRow; // fila actual
         let actualCell = cellPositionDOM - 1; // celda actual
 
-        if (actualRow >= 0 && actualRow < _CONFIG_ROWS) {
+        if (actualRow >= 0 && actualRow <= _CONFIG_ROWS) {
 
             for (let index = 0; index <= 2; index++) {
 
-                if (actualCell >= 0 && actualCell < _CONFIG_CELLS) {
+                if (actualCell >= 0 && actualCell <= _CONFIG_CELLS) {
 
                     if (!(actualRow == rowPositionDOM && actualCell == cellPositionDOM)) {
                         detectMine(actualRow, actualCell) ? minesAround++ : null;
+                        // console.log("Fila: " + actualRow + " - Celda: " + actualCell + " - Minas: " + minesAround);
                     }
                     actualCell++;
                 }
@@ -191,135 +210,70 @@ function numberOfMinesAroundCell(rowPositionDOM, cellPositionDOM) {
     return minesAround;
 }
 
-function numberOfMinesAdjacent(rIndex, cIndex) {
-    console.log("Ejecutando función numberOfMinesAdjacent");
-    let checkRows = [rIndex - 1, rIndex, rIndex + 1];
+function checkMinesEmpty(rowPositionDOM, cellPositionDOM, cellRowParentDOM) {
+    console.log(cellRowParentDOM)
+    console.log("Row Position: " + rowPositionDOM + " - Cell Position: " + cellPositionDOM);
 
-    let checkCells = [cIndex - 1, cIndex, cIndex + 1];
+    let rowList = [rowPositionDOM - 1, rowPositionDOM, rowPositionDOM + 1];
+    let cellList = [cellPositionDOM - 1, cellPositionDOM, cellPositionDOM + 1];
 
-    let minesDetect = {
-        superiorRow: null,
-        inferiorRow: null,
-        leftCell: null,
-        rightCell: null
-    };
+    rowList.map((row) => {
+        cellList.map((cell) => {
+            if (row >= 0 && row <= _CONFIG_ROWS && cell >= 1 && cell <= _CONFIG_CELLS) {
+                if (!(row == rowPositionDOM && cell == cellPositionDOM)
+                    && !(row == rowList[0] && (cell == cellList[0] || cell == cellList[2]))
+                    && !(row == rowList[2] && (cell == cellList[0] || cell == cellList[2]))
+                ) {
+                    let cellDOM;
+                    let rowDOM;
 
-    // recorremos las filas
-    for (let rIndex = 0; rIndex < 3; rIndex++) {
+                    // Capturamos la fila
+                    if (row == rowList[0]) {
+                        rowDOM = cellRowParentDOM.previousElementSibling;
+                        cellDOM = rowDOM.children[cell];
+                    } else if (row == rowList[1]) {
+                        rowDOM = rowPositionDOM;
+                        cellDOM = cellRowParentDOM.children[cell];
+                    } else if (row == rowList[2]) {
+                        rowDOM = cellRowParentDOM.nextElementSibling;
+                        cellDOM = rowDOM.children[cell];
+                    }
 
-        if (checkRows[rIndex] >= 0 && checkRows[rIndex] <= _CONFIG_ROWS) {
+                    // Comprobamos si la celda no esta descubierta
+                    if (cellDOM.classList.contains("js-cell-undiscovered")) {
 
-            // recorremos las celdas
-            for (let cIndex = 0; cIndex < 3; cIndex++) {
+                        let minesArround = checkMinesAround(row, cell);
+                        minesArround > 0 ? (cellDOM.textContent = minesArround, discoverCell(cellDOM)) : cellState(null, cellDOM);
+                        
+                        //TODO: Comprobar si la celda esta descubierta
 
-                if (checkCells[cIndex] > 0 && checkCells[cIndex] <= _CONFIG_CELLS) {
+                        console.log("Fila: ", rowDOM, " - Celda: ", cellDOM, " - Minas: " + minesArround);
 
-                    let actualRow = checkRows[rIndex];
-                    let actualCell = checkCells[cIndex];
-
-                    let results = numberOfMinesAroundCell(actualRow, actualCell, 0);
-
-                    // Evaluando las celdas superior, inferior, izquierda y derecha
-                    // Comprobamos celdas izquierda y derecha
-
-                    // console.log("Evaluando celda: ", actualRow, actualCell);
-
-                    rIndex == 0 && cIndex == 1 ? minesDetect.superiorRow = [results, actualRow, actualCell] : rIndex == 2 && cIndex == 1 ? minesDetect.inferiorRow = [results, actualRow, actualCell] : null;
-                    rIndex == 1 && cIndex == 0 ? minesDetect.leftCell = [results, actualRow, actualCell] : rIndex == 1 && cIndex == 2 ? minesDetect.rightCell = [results, actualRow, actualCell] : null;
+                    }
                 }
-
             }
-        }
+        })
+    });
 
-    }
-    // console.log("Total de evaluaciones: ", minesDetect);
 
-    // comprobamos si el valor del objeto es null
-    // si es null, estamos llamando a una celda inexistente.
+    // // Evaluamos si estamos dentro del tablero
 
-    // Capturamos las filas y celdas del tablero
-    let tbody = document.querySelector("tbody");
-    let rows = tbody.querySelectorAll("tr");
+    // if ( rowPositionDOM == 0 ) 
+    // {
+    //     console.log("Estamos en el borde superior");
+    // } else if ( rowPositionDOM == _CONFIG_ROWS ){ 
+    //     console.log("Estamos en el borde inferior");
+    // }
 
-    cellsEmpty = [];
+    // if ( cellPositionDOM == 1 ) 
+    // {
+    //     console.log("Estamos en el borde izquierdo");
+    // } else if ( cellPositionDOM == _CONFIG_CELLS ){
+    //     console.log("Estamos en el borde derecho");
+    // }
 
-    if (minesDetect.superiorRow != null) {
-        boardSuperiorCell = rows[minesDetect.superiorRow[1]].querySelectorAll("td")[minesDetect.superiorRow[2]];
-        boardSuperiorCell.classList.remove("js-cell-undiscovered");
-        boardSuperiorCell.classList.add("js-cell-discovered");
-
-        boardSuperiorCell.removeEventListener("click", cellState);
-
-        if (minesDetect.superiorRow[0] > 0) {
-            boardSuperiorCell.textContent = minesDetect.superiorRow[0];
- 
-        } else {
-            numberOfMinesAdjacent(minesDetect.superiorRow[1], minesDetect.superiorRow[2]);
-            cellsEmpty.push([minesDetect.superiorRow[1], minesDetect.superiorRow[2]]);
-        }
-        // Quitamos una celda a descubrir
-
-        console.log("Celdas a descubrir: " + cellsUndiscovered);
-    }
-    if (minesDetect.inferiorRow != null) {
-        boardInferiorCell = rows[minesDetect.inferiorRow[1]].querySelectorAll("td")[minesDetect.inferiorRow[2]];
-        boardInferiorCell.classList.remove("js-cell-undiscovered");
-        boardInferiorCell.classList.add("js-cell-discovered");
-
-        boardInferiorCell.removeEventListener("click", cellState);
-
-        if (minesDetect.inferiorRow[0] > 0) {
-            boardInferiorCell.textContent = minesDetect.inferiorRow[0];
- 
-        } else {
-            cellsEmpty.push([minesDetect.inferiorRow[1], minesDetect.inferiorRow[2]]);
-        }
-        // Quitamos una celda a descubrir
-
-        console.log("Celdas a descubrir: " + cellsUndiscovered);
-    }
-    if (minesDetect.leftCell != null) {
-        boardSelectedLeftCell = rows[minesDetect.leftCell[1]].querySelectorAll("td")[minesDetect.leftCell[2]];
-        boardSelectedLeftCell.classList.remove("js-cell-undiscovered");
-        boardSelectedLeftCell.classList.add("js-cell-discovered");
-
-        boardSelectedLeftCell.removeEventListener("click", cellState);
-
-        if (minesDetect.leftCell[0] > 0) {
-            boardSelectedLeftCell.textContent = minesDetect.leftCell[0];
-    
-        } else {
-            cellsEmpty.push([minesDetect.leftCell[1], minesDetect.leftCell[2]]);
-            numberOfMinesAdjacent(minesDetect.leftCell[1], minesDetect.leftCell[2]);
-        }
-        // Quitamos una celda a descubrir
-        console.log("Celdas a descubrir: " + cellsUndiscovered);
-    }
-    if (minesDetect.rightCell != null) {
-        boardSelectedRightCell = rows[minesDetect.rightCell[1]].querySelectorAll("td")[minesDetect.rightCell[2]];
-        boardSelectedRightCell.classList.remove("js-cell-undiscovered");
-        boardSelectedRightCell.classList.add("js-cell-discovered");
-
-        boardSelectedRightCell.removeEventListener("click", cellState);
-
-        if (minesDetect.rightCell[0] > 0) {
-            boardSelectedRightCell.textContent = minesDetect.rightCell[0];
-      
-        } else {
-            cellsEmpty.push([minesDetect.rightCell[1], minesDetect.rightCell[2]]);
-            // numberOfMinesAdjacent(minesDetect.rightCell[1], minesDetect.rightCell[2]);
-        }
-        // Quitamos una celda a descubrir
-
-        console.log("Celdas a descubrir: " + cellsUndiscovered);
-    }
-
-    // TODO: Pasar la función a ciclos;
-
-    // TODO: Averiguar porque al ejecutar el descubrimiento de las celdas, el eje puesto entra en un bucle infinito.
-    // TODO: Ejemplo: Descubrir hacia la arriba y hacia la izquierda, arriba y derecha, abajo izquierda y derecha.
-    // TODO: pero al  hacer arriba y abajo o izquierda y derecha, entra en bucle infinito.
 }
+
 
 function cellOptions(event) {
 
@@ -387,17 +341,25 @@ function startCounter() {
 
 }
 
+function finalGame(){
+            
+    stopCounter();
+    
+    let cells = document.querySelectorAll(".js-cell-undiscovered");
+    cells.forEach((cell) => {
+        let cellRowParentDOM = cell.parentNode;
+        let cellPositionDOM = cell.cellIndex;
+        let rowPositionDOM = cellRowParentDOM.rowIndex;
+        discoverCell(cell);
+        let isMine = detectMine(rowPositionDOM, cellPositionDOM);
+        minesAround = checkMinesAround(rowPositionDOM, cellPositionDOM);
 
+        isMine ? ( cell.classList.add("js-cell-mine")) : minesAround > 0 ? cell.textContent = minesAround : null;
 
-/*
-let state = 0;
-let strings = ["", "F", "?"];
-let len = strings.length;
-
-for(let i = 0; i < 10; i++) {
-  let index = state++ % len;
-  if(state === len) state = 0;
-  console.log(strings[index]);
+    });
+    // console.warn("¡Has perdido!");
+    // alert("Has perdido");
 }
 
-*/
+//TODO: Insertar en cada celda un contenedor que sea el que contenga el contenido.
+//TODO: Generar nuevas funciones individuales para no repetir código.

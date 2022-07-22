@@ -30,6 +30,8 @@ time, mark, audio, video {
     font-size: 100%;
     font: inherit;
     vertical-align: baseline;
+    width: 0px;
+    height: 0px;
 }
 /*  HTML5 display-role reset for older browsers  */
 article, aside, details, figcaption, figure, 
@@ -61,6 +63,17 @@ table {
     End of reset of CSS
 */
 
+
+/*
+    Start of custom CSS
+*/
+
+:root{
+    --cell-width: 1.5em;
+    --cell-height: 1.5em;
+
+}
+
 main {
     width: 582px;
     height: 513px;
@@ -73,28 +86,42 @@ table {
 }
 
 td {
-    min-width: 1.5em;
-    max-width: 1.5em;
-    width: 1.5em;
+    min-width: var(--cell-width) !important;
+    max-width:var(--cell-width);
+    width: var(--cell-width);
 
-    min-height: 1.5em;
-    max-height: 1.5em;
-    height: 1.5em;
+    min-height: var(--cell-height);
+    max-height: var(--cell-height);
+    height: var(--cell-height);
 
     text-align: center;
     border: 1px solid #ccc;
+
+    font-size: small;
+    font-weight: bold;
 }
 
 #scoreBoard{
+    width: 100%;
+    height: var(--cell-height);
     display: flex;
     justify-content: space-around;
-    height: 50px;
     /* border: 1px solid rgb(77, 5, 5); */
     align-items: center;
+    border: 1px solid green;
 }
 
 #scoreBoard > * {
-    /* border: 1px solid green; */
+    border: 1px solid green;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#scoreBoard > * > * {
+    border: 1px solid green;
     width: 100%;
     height: 100%;
     display: flex;
@@ -111,7 +138,6 @@ td {
 
 .js-cell-discovered {
     color: red;
-    font-weight: bold;
     cursor:auto;
     border: 1px solid rgb(239, 239, 239);
 }
@@ -122,9 +148,14 @@ td {
 
 .js-cell-mine {
     background-color: red;
+    width: var(--cell-width);
+    height: var(--cell-height);
 }
 
 .js-cell-mine::before {
     content: "💣";
+    width: var(--cell-width);
+    height: var(--cell-height);
+
 }
 
