@@ -1,97 +1,90 @@
-
-/* 
-
-Reset of CSS by the follower jmorenoponce
-https://github.com/jmorenoponce
-
-*/
-
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-    width: 0px;
-    height: 0px;
-}
-/*  HTML5 display-role reset for older browsers  */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-    display: block;
-}
-body {
-    line-height: 1;
-}
-ol, ul {
-    list-style: none;
-}
-blockquote, q {
-    quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-    content: '';
-    content: none;
-}
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-
-
 /*
-    End of reset of CSS
+  1. Use a more-intuitive box-sizing model.
 */
-
-
+*, *::before, *::after {
+    box-sizing: border-box;
+  }
+  /*
+    2. Remove default margin
+  */
+  * {
+    margin: 0;
+  }
+  /*
+    3. Allow percentage-based heights in the application
+  */
+  html, body {
+    height: 100%;
+  }
+  /*
+    Typographic tweaks!
+    4. Add accessible line-height
+    5. Improve text rendering
+  */
+  body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  /*
+    6. Improve media defaults
+  */
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+  /*
+    7. Remove built-in form typography styles
+  */
+  input, button, textarea, select {
+    font: inherit;
+  }
+  /*
+    8. Avoid text overflows
+  */
+  p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+  }
+  /*
+    9. Create a root stacking context
+  */
+  #root, #__next {
+    isolation: isolate;
+  }
 /*
     Start of custom CSS
 */
 
 :root{
-    --cell-width: 1.5em;
-    --cell-height: 1.5em;
+    --cell-width: 40px;
+    --cell-height: 40px;
 
 }
 
 main {
     width: 582px;
     height: 513px;
+    margin: auto;
+}
+.container-table{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
 }
 
 table {
-    border: 1px solid #ccc;
-    padding: 0.5em;
-    width: 100%;
+   
+    padding: 8px;
 }
 
+
 td {
-    min-width: var(--cell-width) !important;
-    max-width:var(--cell-width);
+    margin: 0;
+	padding: 0;
+	border: 0;
     width: var(--cell-width);
 
-    min-height: var(--cell-height);
-    max-height: var(--cell-height);
     height: var(--cell-height);
 
     text-align: center;
@@ -108,20 +101,20 @@ td {
     justify-content: space-around;
     /* border: 1px solid rgb(77, 5, 5); */
     align-items: center;
-    border: 1px solid green;
 }
 
 #scoreBoard > * {
-    border: 1px solid green;
+   
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid #ccc;
 }
 
 #scoreBoard > * > * {
-    border: 1px solid green;
+
     width: 100%;
     height: 100%;
     display: flex;
@@ -148,14 +141,10 @@ td {
 
 .js-cell-mine {
     background-color: red;
-    width: var(--cell-width);
-    height: var(--cell-height);
+   
 }
 
 .js-cell-mine::before {
     content: "💣";
-    width: var(--cell-width);
-    height: var(--cell-height);
-
 }
 

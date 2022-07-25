@@ -1,6 +1,6 @@
 // Datos del tablero
-const _CONFIG_ROWS = 4;
-const _CONFIG_CELLS = 4;
+const _CONFIG_ROWS = 10;
+const _CONFIG_CELLS = 10;
 
 // Datos del juego
 const _CONFIG_TOTAL_CELLS = _CONFIG_ROWS * _CONFIG_CELLS;
@@ -15,6 +15,8 @@ selectedCell = null;
 
 gameStarted = false;
 playTime = 0;
+
+gameStatus = "";
 
 
 console.log("Número de minas: " + _CONFIG_MINES);
@@ -33,14 +35,14 @@ tbody = document.querySelector("tbody");
 let displayMinesCnt = document.querySelector("#scoreBoard").querySelector("section").querySelector("div");
 displayMinesCnt.textContent = "Total de 💣: " + flags;
 
-
+let cellHeadPosition = 0;
 for (let headCell = 0; headCell <= _CONFIG_CELLS; headCell++) {
     let td = document.createElement("td");
-    td.textContent = headCell == 0 ? " " : headCell;
+    td.textContent = headCell == 0 ? " " : cellHeadPosition++;
     thead.appendChild(td);
 }
 
-for (let rows = 0; rows <= _CONFIG_ROWS; rows++) {
+for (let rows = 0; rows < _CONFIG_ROWS; rows++) {
     let tr = document.createElement('tr');
 
     for (let cells = 0; cells <= _CONFIG_CELLS; cells++) {
@@ -129,7 +131,7 @@ function cellState(event, cell) {
         } else if (isMine === true) {
             cell.classList.add("js-cell-mine");
 
-            finalGame("mine");
+            finalGame("fail");
 
 
         }
@@ -155,17 +157,14 @@ function discoverCell(cell) {
     // Quitamos una celda al total de celdas a descubrir
     cellsUndiscovered--;
 
-    console.log("Celdas a descubrir: " + cellsUndiscovered);
+    // console.log("Celdas a descubrir: " + cellsUndiscovered);
 
 
     cell.removeEventListener('click', cellState);
     cell.removeEventListener('mouseup', cellOptions);
 
-    if (cellsUndiscovered == 0) {
-        finalGame("cell");
-
-        
-
+    if (cellsUndiscovered == 0 && gameStatus != "lose") {
+        finalGame("win");
     }
 }
 
@@ -219,7 +218,7 @@ function checkMinesEmpty(rowPositionDOM, cellPositionDOM, cellRowParentDOM) {
 
     rowList.map((row) => {
         cellList.map((cell) => {
-            if (row >= 0 && row <= _CONFIG_ROWS && cell >= 1 && cell <= _CONFIG_CELLS) {
+            if (row >= 0 && row < _CONFIG_ROWS && cell >= 1 && cell <= _CONFIG_CELLS) {
                 if (!(row == rowPositionDOM && cell == cellPositionDOM)
                     && !(row == rowList[0] && (cell == cellList[0] || cell == cellList[2]))
                     && !(row == rowList[2] && (cell == cellList[0] || cell == cellList[2]))
@@ -274,7 +273,6 @@ function checkMinesEmpty(rowPositionDOM, cellPositionDOM, cellRowParentDOM) {
 
 }
 
-
 function cellOptions(event) {
 
     let cell = event.target;
@@ -289,6 +287,9 @@ function cellOptions(event) {
             if (setFlag) {
                 cell.classList.add("js-cell-options");
                 cell.textContent = "🚩";
+                console.log("Limite de banderas? ",setFlag)
+            } else{
+                cell.textContent = "❓";
             }
         } else if (cellContent == "🚩") {
             calculateFlags(true);
@@ -305,16 +306,17 @@ function calculateFlags(add) {
 
     add ? flags++ : flags--;
 
-    // if ( flags < 0 ) { 
-    //     flags = 0;
-    //     return false; 
-    // }
+    // flags < 0 ? (flags = 0, false) : null;
 
-    flags < 0 ? (flags = 0, false) : null;
-
-    let displayMinesCnt = document.querySelector("#scoreBoard").querySelector("section").querySelector("div");
-    displayMinesCnt.textContent = "Total de 💣: " + flags;
-    return true;
+    if ( flags < 0 ) {
+        flags = 0;
+        return false;
+    } else{
+        let displayMinesCnt = document.querySelector("#scoreBoard").querySelector("section").querySelector("div");
+        displayMinesCnt.textContent = "Total de 💣: " + flags;
+        return true;
+    }
+    
 }
 
 function stopCounter() {
@@ -341,10 +343,17 @@ function startCounter() {
 
 }
 
-function finalGame(){
+function finalGame(type){
             
     stopCounter();
-    
+    if (type == "win") { 
+        alert("¡Has ganado! en "+ playTime + " minutos");
+        console.warn("¡Has ganado! en "+ playTime + " segundos");
+    } else {
+        gameStatus = "lose";
+        alert("¡Has perdido! te han faltado "+ flags+ " minas y "+ cellsUndiscovered+ " celdas" );
+    }
+
     let cells = document.querySelectorAll(".js-cell-undiscovered");
     cells.forEach((cell) => {
         let cellRowParentDOM = cell.parentNode;
@@ -357,9 +366,8 @@ function finalGame(){
         isMine ? ( cell.classList.add("js-cell-mine")) : minesAround > 0 ? cell.textContent = minesAround : null;
 
     });
-    // console.warn("¡Has perdido!");
-    // alert("Has perdido");
+
+   
 }
 
-//TODO: Insertar en cada celda un contenedor que sea el que contenga el contenido.
 //TODO: Generar nuevas funciones individuales para no repetir código.
