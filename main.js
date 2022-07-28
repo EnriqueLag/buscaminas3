@@ -1,5 +1,4 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron')
-const { template } = require('./menuTemplate');
 const path = require('path');
 
 win = "";
@@ -11,7 +10,6 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 800,
         height: 600,
-    
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -21,26 +19,16 @@ function createWindow() {
     })
 
     win.loadFile(__dirname + '/src/index.html');
-
-    const menu = Menu.buildFromTemplate(template)
-    Menu.setApplicationMenu(menu)
-
+    win.removeMenu();
 
     //Open the DevTools.
     win.webContents.openDevTools();
-   
+
+    ipcMain.on('new-game', (event, arg) => {
+        win.reload();
+    });
 
 }
-ipcMain.on("gameDifficultyChanged", (event, arg) => {
-    console.log("dificultad cambiad");
-    gameDifficulty = 0;
-});
-
-ipcMain.on("gameStatus", (event, arg) => {
-    console.log("Mandando estado del juego: " + gameStatus);
-    event.reply("gameStatus", [gameStatus,gameDifficulty] );
-
-});
 
 
 
@@ -52,9 +40,13 @@ app.whenReady().then(() => {
             createWindow()
         }
 
-            console.log(BrowserWindow.getAllWindows().length)
-        
+        console.log(BrowserWindow.getAllWindows().length)
+
     })
+
+    ipcMain.on('exit-game', (event, arg) => {
+        app.quit();
+    });
 })
 
 app.on('window-all-closed', () => {

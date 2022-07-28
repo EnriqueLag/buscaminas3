@@ -1,14 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscaminas</title>
+    <link rel="stylesheet" href="./assets/bootstrap-icons-1.8.2/bootstrap-icons.css">
     <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="./controller/menu-bar/menu-bar.css">
+    <link rel="stylesheet" href="./controller/modal/modal.css">
 </head>
+
 <body>
-    <div class="js-app-modal js-hidden"></div>
+    <header>
+        <nav>
+            <ul class="menu-bar">
+                <li>
+                    Juego
+                    <ul class="sub-menu">
+                        <li>Nuevo Juego</li>
+                        <li>Salir</li>
+                    </ul>
+                </li>
+                <li>
+                    Dificultad
+                    <ul class="sub-menu">
+                        <li>Fácil</li>
+                        <li>Intermedio</li>
+                        <li>Difícil</li>
+                    </ul>
+                </li>
+                <li>Puntuaciones</li>
+                <li>Acerca de</li>
+            </ul>
+        </nav>
+    </header>
+    <div class="js-app-modal js-hidden">
+
+        <article>
+            <div></div>
+        </article>
+
+    </div>
+    <div class="js-app-scoreBoard ">
+
+        <article>
+            <form>
+                <p>
+                    <label for="name">Nombre:</label>
+                    <input type="text" id="name" placeholder="AAA" maxlength="3">
+                    <label for="score">Puntuación: </label>
+                    <input type="text" id="score" disabled>
+                </p>
+                <input type="submit" value="Guardar">
+                <input type="button" value="Cancelar">
+            </form>
+        </article>
+
+    </div>
+
     <main>
         <div class="container" id="scoreBoard">
             <section>
@@ -16,7 +67,7 @@
                     Total de 💣
                 </div>
             </section>
-               
+
             <section>
                 <div>
                     00:00
@@ -30,6 +81,11 @@
             </table>
         </div>
     </main>
+
     <script src="buscaminas.js"></script>
+    <script src="./controller/modal/modal.js"></script>
+    <script src="./controller/menu-bar/menu-bar.js"></script>
+
 </body>
+
 </html>

@@ -1,4 +1,4 @@
-const { ipcRenderer } = require("electron");
+const shell = require('electron').shell
 
 // Datos del tablero
 _CONFIG_ROWS = 10;
@@ -31,9 +31,24 @@ console.log("Número de celdas a descubrir: " + cellsUndiscovered);
 
 // Creación del tablero
 
-function createBoard() {
+function createBoard(gameDifficulty) {
 
-    gameStarted ? (stopCounter(),playTime=0) : null;
+    switch (gameDifficulty) {
+        case 0:
+            _CONFIG_ROWS = 8;
+            _CONFIG_CELLS = 8;
+            break;
+        case 1:
+            _CONFIG_ROWS = 10;
+            _CONFIG_CELLS = 10;
+            break;
+        case 2:
+            _CONFIG_ROWS = 10;
+            _CONFIG_CELLS = 15;
+            break;
+    }
+
+    gameStarted ? (stopCounter(), playTime = 0) : null;
 
     // Datos del juego
     _CONFIG_TOTAL_CELLS = _CONFIG_ROWS * _CONFIG_CELLS;
@@ -64,11 +79,11 @@ function createBoard() {
     tbody.textContent = "";
 
     let displayScoreBoardCnt = document.querySelector("#scoreBoard").querySelectorAll("section")
-    
-    let displayMinesCnt =  displayScoreBoardCnt[0].querySelector("div");
+
+    let displayMinesCnt = displayScoreBoardCnt[0].querySelector("div");
     displayMinesCnt.textContent = "Total de 💣: " + flags;
-    
-    let displayTimeCnt =  displayScoreBoardCnt[1].querySelector("div");
+
+    let displayTimeCnt = displayScoreBoardCnt[1].querySelector("div");
     displayTimeCnt.textContent = "00:00";
 
     let cellHeadPosition = 0;
@@ -387,6 +402,9 @@ function finalGame(type) {
     if (type == "win") {
         alert("¡Has ganado! en " + playTime + " minutos");
         console.warn("¡Has ganado! en " + playTime + " segundos");
+        gameStatus = "win"; 
+
+
     } else {
         gameStatus = "lose";
         alert("¡Has perdido! te han faltado " + flags + " minas y " + cellsUndiscovered + " celdas");
@@ -406,69 +424,22 @@ function finalGame(type) {
 
 
 }
-function checkGameStatus() {
-    let cntModal = document.querySelector(".js-app-modal");
 
-    counter = window.setInterval(() => {
-
-        ipcRenderer.send('gameStatus');
-        ipcRenderer.on('gameStatus', (event, arg) => {
-
-            gameStatus = arg[0];
-            gameDifficulty = arg[1];
-
-            function showModal() {
-                gameStatus == false ? (cntModal.classList.remove('js-hidden')) : null;
-
-                if (gameStatus == false) {
-                    console.log("MEstado del modal:", modalStatus);
-                    modalStatus = true;
-                    cntModal.classList.remove('js-hidden');
-                    gameStarted ? (stopCounter(), modalStatus = true) : null;
-                } else {
-                    console.log("Estado del modal:", modalStatus);
-                    cntModal.classList.add('js-hidden');
-                    gameStarted ? console.log("Juego iniciado") : console.log("Juego no iniciado");
-
-                    if (modalStatus == true && gameStarted) {
-                        startCounter();
-                        modalStatus = false;
-                    }
-                }
-            }
-
-            function changeDifficulty(gameDifficulty) {
-                switch (gameDifficulty) {
-                    case 0:
-                        break;
-                    case 1:
-                        _CONFIG_ROWS = 5;
-                        _CONFIG_CELLS = 5;
-                        createBoard();
-                        ipcRenderer.send('gameDifficultyChanged');
-                        break;
-                    case 2:
-                        _CONFIG_ROWS = 10;
-                        _CONFIG_CELLS = 10;
-                        createBoard();
-                        ipcRenderer.send('gameDifficultyChanged');
-                        break;
-                    case 3:
-                        _CONFIG_ROWS = 10;
-                        _CONFIG_CELLS = 15;
-                        createBoard();
-                        ipcRenderer.send('gameDifficultyChanged');
-                        break;
-                }
-            }
-
-            showModal();
-            changeDifficulty(gameDifficulty);
+function externalLinks() {
+    let externalLinks = document.querySelectorAll('a[href]');
+    externalLinks.forEach(link => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+            shell.openExternal(link.href)
         });
-
-    }, 1000);
+    });
 }
 
-checkGameStatus();
 
-//TODO: Generar nuevas funciones individuales para no repetir código.
+//TODO: Añadir carita central animada
+
+//TODO: Registrar puntuaciones = tiempo que tardas
+//TODO: Por categorías (fácil, medio, difícil)
+//TODO: Ordenar de menos a más.
+//TODO: js-app-scoreBoard 
+
