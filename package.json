@@ -1,11 +1,12 @@
 {
   "name": "buscaminas",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "a minesweeper clone ",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "portable": "electron-builder --win portable"
   },
   "keywords": [
     "JavaScript",
@@ -16,7 +17,9 @@
   "devDependencies": {
     "electron": "^19.0.10"
   },
-  "dependencies": {
-    "electron-builder": "^23.1.0"
+  "build": {
+    "icon": "./src/assets/bomba.ico",
+    "appId": "buscaminas"
   }
+
 }

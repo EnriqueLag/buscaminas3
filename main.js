@@ -10,6 +10,7 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 900,
         height: 700,
+        icon: path.join(__dirname, './src/assets/bomba.ico'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -22,7 +23,7 @@ function createWindow() {
     win.removeMenu();
 
     //Open the DevTools.
-    win.webContents.openDevTools();
+    //win.webContents.openDevTools();
 
     ipcMain.on('new-game', (event, arg) => {
         win.reload();
