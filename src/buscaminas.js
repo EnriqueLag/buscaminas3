@@ -1,4 +1,3 @@
-
 // Datos del tablero
 _CONFIG_ROWS = 10;
 _CONFIG_CELLS = 10;
@@ -24,16 +23,9 @@ modalStatus = false;
 
 _gameDifficulty = 1;
 
-
-
-// console.log("Número de minas: " + _CONFIG_MINES);
-// console.log("Número de celdas: " + _CONFIG_TOTAL_CELLS);
-// console.log("Número de celdas a descubrir: " + cellsUndiscovered);
-
 // Creación del tablero
 
 function createBoard(gameDifficulty) {
-
 
     clearGameData();
     changeDifficulty(gameDifficulty);
@@ -110,11 +102,9 @@ function createBoard(gameDifficulty) {
         });
         locationMines.push([mRow, mCell]);
 
-
     }
 
 }
-
 
 // Función para calcular el estado de las celdas
 
@@ -432,7 +422,6 @@ function clearGameData() {
 
 }
 
-
 function changeSmile(smileType) {
     let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("section")[1];
     switch (smileType) {
@@ -489,18 +478,18 @@ function changeDifficulty(gameDifficulty) {
     switch (gameDifficulty) {
         case 0:
             _gameDifficulty = 0;
-            _CONFIG_ROWS = 8;
-            _CONFIG_CELLS = 8;
+            _CONFIG_ROWS = 2;
+            _CONFIG_CELLS = 2;
             break;
         case 1:
             _gameDifficulty = 1;
-            _CONFIG_ROWS = 10;
-            _CONFIG_CELLS = 10;
+            _CONFIG_ROWS = 2;
+            _CONFIG_CELLS = 2;
             break;
         case 2:
             _gameDifficulty = 2;
-            _CONFIG_ROWS = 10;
-            _CONFIG_CELLS = 15;
+            _CONFIG_ROWS = 2;
+            _CONFIG_CELLS = 2;
             break;
 
     }
@@ -517,10 +506,3 @@ let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("se
 scoreBoardSmile.addEventListener('click', () => {
     createBoard();
 });
-
-
-//TODO: Registrar puntuaciones = tiempo que tardas
-//TODO: Por categorías (fácil, medio, difícil)
-//TODO: Ordenar de menos a más.
-
-

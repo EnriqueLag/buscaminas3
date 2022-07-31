@@ -1,21 +1,19 @@
-const { ipcRenderer } = require("electron");
 
 let menuBarCnt = document.querySelector(".menu-bar");
 let subMenuCnt = menuBarCnt.querySelectorAll(".sub-menu");
 let menuItemCnt = menuBarCnt.querySelectorAll("li[class='menu-item']");
-
 
 menuItemCnt.forEach(item => {
 
     switch (item.textContent) {
         case "Nuevo juego":
             item.addEventListener("click", () => {
-                ipcRenderer.send("new-game");
+                location.reload();
             });
             break;
         case "Salir":
             item.addEventListener("click", () => {
-                ipcRenderer.send("exit-game");
+                
             });
         case "Fácil":
             item.addEventListener("click", () => {
@@ -26,7 +24,7 @@ menuItemCnt.forEach(item => {
         case "Intermedio":
             item.addEventListener("click", () => {
                 createBoard(1);
-                console.log(item);
+                // console.log(item);
             });
             break;
         case "Difícil":
@@ -56,10 +54,8 @@ menuItemCnt.forEach(item => {
 
 function createAbout() {
 
-
     let div = document.createElement("div");
     div.classList.add("about");
-
 
     let description = document.createElement("p");
     description.classList.add("description");
@@ -77,12 +73,14 @@ function createAbout() {
     let twitchIcon = document.createElement("i");
     twitchIcon.classList.add("bi", "bi-twitch");
     twitch.append(twitchIcon, "Altaskur");
+    twitch.target = "_blank";
 
     let github = document.createElement("a");
     github.href = "https://github.com/altaskur";
     githubIcon = document.createElement("i");
     githubIcon.classList.add("bi", "bi-github");
     github.append(githubIcon, "Altaskur");
+    github.target = "_blank";
 
     author.append(twitch, github);
     description.append(version);
@@ -229,7 +227,7 @@ function addScore(_gameDifficulty,playTime){
     addScore_container.addEventListener("submit",  (event) => { 
         event.preventDefault();
         console.log(playTime)
-        savePoints(_gameDifficulty, playTime, playerNameInput.value);
+        savePoints(_gameDifficulty, playTime, addScore_playerNameInput.value);
         showHideModal();
     });
 

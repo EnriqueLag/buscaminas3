@@ -1,4 +1,3 @@
-const shell = require('electron').shell
 
 let modalCnt = document.querySelector(".js-app-modal");
 let modalCalcelButton = document.querySelector("#modal-cancel");
@@ -24,15 +23,5 @@ function showHideModal() {
 function modalContent(content) {
     modalArticle.innerHTML = "";
     modalArticle.appendChild(content);
-    externalLinks();
 }
 
-function externalLinks() {
-    let externalLinks = document.querySelectorAll('a[href]');
-    externalLinks.forEach(link => {
-        link.addEventListener("click", (event) => {
-            event.preventDefault();
-            shell.openExternal(link.href)
-        });
-    });
-}
