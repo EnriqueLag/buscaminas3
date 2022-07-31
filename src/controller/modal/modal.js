@@ -1,13 +1,4 @@
-
-if ( navigator.userAgent.indexOf('Electron') >= 0 ) {
-    console.log("Electron");
-    const shell = require('electron').shell
-} else {
-    console.log("Browser");
-}
- 
-
-
+const shell = require('electron').shell
 
 let modalCnt = document.querySelector(".js-app-modal");
 let modalCalcelButton = document.querySelector("#modal-cancel");

@@ -20,7 +20,7 @@ menuItemCnt.forEach(item => {
         case "Fácil":
             item.addEventListener("click", () => {
                 createBoard(0);
-                console.log(item);
+                // console.log(item);
             });
             break;
         case "Intermedio":
@@ -37,7 +37,7 @@ menuItemCnt.forEach(item => {
         case "Puntuaciones":
             item.addEventListener("click", () => {
 
-                modalContent(createScore());
+                modalContent(showScore());
                 showHideModal();
             });
             break;
@@ -54,16 +54,12 @@ menuItemCnt.forEach(item => {
     }
 });
 
-
-
 function createAbout() {
 
 
     let div = document.createElement("div");
     div.classList.add("about");
 
-    let title = document.createElement("h1");
-    title.textContent = "Acerca de";
 
     let description = document.createElement("p");
     description.classList.add("description");
@@ -90,14 +86,19 @@ function createAbout() {
 
     author.append(twitch, github);
     description.append(version);
-    div.append(title, description, author);
+    div.append(description, author);
 
     return div;
 }
 
-function createScore() {
-    let scoreCnt = document.createElement("div");
-    scoreCnt.classList.add("score-cnt");
+function showScore() {
+    let showScore_Container = document.createElement("div");
+    showScore_Container.classList.add("score-cnt");
+
+    let showScore_title = document.createElement("h1");
+    showScore_title.textContent = "Puntuaciones";
+    showScore_Container.append(showScore_title);
+
     for (let i = 0; i < 3; i++) {
         let difficulty = localStorage.getItem(i);
         if (difficulty != null && difficulty.length > 0) {
@@ -114,61 +115,125 @@ function createScore() {
                     levelName = "Difícil";
                     break;
             }
-            let levelCnt = document.createElement("div");
-            levelCnt.classList.add("level-cnt");
+            let showScore_levelContainer = document.createElement("div");
+            showScore_levelContainer.classList.add("level-cnt");
 
-            let levelNameCnt = document.createElement("i");
-            levelNameCnt.textContent = levelName;
-            levelCnt.appendChild(levelNameCnt);
+            let showScore_levelNameContainer = document.createElement("i");
+            showScore_levelNameContainer.textContent = levelName;
+            showScore_levelContainer.appendChild(showScore_levelNameContainer);
 
-            let scoreBoardTable = document.createElement("table");
+            let showScore_scoreBoardTable = document.createElement("table");
+            showScore_scoreBoardTable.id =
+                "showScore-board-table";
 
-            let scoreBoardTableHead = document.createElement("thead");
-            let scocreBoardTableHeadRow = document.createElement("tr");
+            let showScore_tableHead = document.createElement("thead");
+            let showScore_tableHead_Row = document.createElement("tr");
 
-            let scoreBoardTableHeadCell = document.createElement("th");
-            scoreBoardTableHeadCell.textContent = "Nombre";
-            scocreBoardTableHeadRow.appendChild(scoreBoardTableHeadCell);
+            let showScore_tableCell = document.createElement("th");
+            showScore_tableCell.textContent = "Nombre";
+            showScore_tableHead_Row.appendChild(showScore_tableCell);
 
-            scoreBoardTableHeadCell = document.createElement("th");
-            scoreBoardTableHeadCell.textContent = "Puntuación";
-            scocreBoardTableHeadRow.appendChild(scoreBoardTableHeadCell);
+            showScore_tableHead_cell = document.createElement("th");
+            showScore_tableHead_cell.textContent = "Tiempo";
+            showScore_tableHead_Row.appendChild(showScore_tableHead_cell);
 
-            scoreBoardTableHead.appendChild(scocreBoardTableHeadRow);
-            scoreBoardTable.appendChild(scoreBoardTableHead);
+            showScore_tableHead.appendChild(showScore_tableHead_Row);
+            showScore_scoreBoardTable.appendChild(showScore_tableHead);
 
-            let scoreBoardTableBody = document.createElement("tbody");
+            let showScore_tableBody = document.createElement("tbody");
             difficulty.sort(function (a, b) {
                 if (a.points > b.points) {
-                    return -1;
+                    return 1;
                 }
                 if (a.points < b.points) {
-                    return 1;
+                    return -1;
                 }
 
                 return 0;
             }).slice(0, 5).map(item => {
 
-                let scoreBoardTableBodyRow = document.createElement("tr");
+                let showScore_tableBody_row = document.createElement("tr");
 
-                let scoreBoardTableBodyCell = document.createElement("td");
-                scoreBoardTableBodyCell.textContent = item.user;
-                scoreBoardTableBodyRow.appendChild(scoreBoardTableBodyCell);
+                let showScore_tableBody_cell = document.createElement("td");
 
-                scoreBoardTableBodyCell = document.createElement("td");
-                scoreBoardTableBodyCell.textContent = item.points;
-                scoreBoardTableBodyRow.appendChild(scoreBoardTableBodyCell);
+                showScore_tableBody_cell.textContent = item.player;
+                showScore_tableBody_row.appendChild(showScore_tableBody_cell);
 
-                scoreBoardTableBody.appendChild(scoreBoardTableBodyRow);
+                showScore_tableBody_cell = document.createElement("td");
+                showScore_tableBody_cell.textContent = item.points;
+                showScore_tableBody_row.appendChild(showScore_tableBody_cell);
 
+                showScore_tableBody.appendChild(showScore_tableBody_row);
 
             });
-            scoreBoardTable.appendChild(scoreBoardTableBody);
-            levelCnt.appendChild(scoreBoardTable);
-            scoreCnt.appendChild(levelCnt);
+            showScore_scoreBoardTable.appendChild(showScore_tableBody);
+            showScore_levelContainer.appendChild(showScore_scoreBoardTable);
+        
+            showScore_Container.appendChild(showScore_levelContainer);
         }
-
     }
+    let clearBtn = document.createElement("button");
+        clearBtn.classList.add("js-modal-button");
+        clearBtn.textContent = "Eliminar";
+        clearBtn.addEventListener("click", () => {
+            window.localStorage.clear();
+            showHideModal();
+        });
+    let p = document.createElement("p");
+    p.appendChild(clearBtn);
+    showScore_Container.appendChild(p);
 
-    return scoreCnt;
+    return showScore_Container;
+}
+
+function addScore(_gameDifficulty,playTime){
+
+    let addScore_container = document.createElement("form");
+    addScore_container.classList.add("score-cnt","score-add-cnt");
+
+    let addScore_inputTitle = document.createElement("h1");
+    addScore_inputTitle.textContent = "Añadir puntuación";
+
+
+    let addScore_playerNameInput = document.createElement("input");
+    addScore_playerNameInput.type = "text";
+    addScore_playerNameInput.placeholder = "AAA";
+    addScore_playerNameInput.value = "";
+    addScore_playerNameInput.classList.add("player-name-input");
+    addScore_playerNameInput.maxLength="3";
+    addScore_playerNameInput.required = true;
+    addScore_playerNameInput.focus();
+    addScore_playerNameInput.id = "player-name-input";
+
+    let addScore_playerNameLabel = document.createElement("label");
+    addScore_playerNameLabel.htmlFor = "score-time-input";
+    addScore_playerNameLabel.textContent = "Nombre:";
+    
+    let addScore_scoreInput = document.createElement("input");
+    addScore_scoreInput.type = "number";
+    addScore_scoreInput.value = playTime;
+    addScore_scoreInput.disabled = true;
+
+    let addScore_scoreLabel = document.createElement("label");
+    addScore_scoreLabel.htmlFor = "score-input";
+    addScore_scoreLabel.textContent = "Tiempo:";
+
+    let addScore_p = document.createElement("p");
+
+    let addScore_SendInput = document.createElement("input");
+    addScore_SendInput.type = "submit";
+    addScore_SendInput.value = "Enviar";
+    addScore_SendInput.classList.add("js-modal-button");
+    addScore_p.appendChild(addScore_SendInput);
+    
+    addScore_container.addEventListener("submit",  (event) => { 
+        event.preventDefault();
+        console.log(playTime)
+        savePoints(_gameDifficulty, playTime, playerNameInput.value);
+        showHideModal();
+    });
+
+    addScore_container.append(addScore_inputTitle,addScore_playerNameLabel, addScore_playerNameInput, addScore_scoreLabel, addScore_scoreInput, addScore_p);
+    return addScore_container;
+
 }

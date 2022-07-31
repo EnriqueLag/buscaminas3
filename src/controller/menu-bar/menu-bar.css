@@ -1,39 +1,72 @@
 header{
   position: fixed;
   width: 100%;
-  margin-bottom: 200px;
-  padding-bottom: 200px;
-
+  height: 20px;
+  top: 0;
+  vertical-align: middle;
   background-color: rgb(16, 16, 16);
-  padding: 2px;
-  border-bottom: 1px solid #181818;
+  padding: 5px;
+  border-bottom: 7px solid #b8b8b8;
   color: rgb(247, 247, 247);
 
   cursor:default;
+  z-index: 100;
 }
 
-ul {
+nav {
+  padding-top: 2px;
+}
+
+nav ul {
   list-style: none;
   padding: 0;
   margin: 0;
+
+  margin-right: 8px;
 }
 
 .menu-bar > li {
   display: inline-block;
-  margin: 4px;
-  padding: 2px;
+  margin-left: 8px;
+
 }
 
-.menu-bar > li:hover .sub-menu{
-  display: block;
-}
+.menu-bar > .menu-item:hover .sub-menu{
+  /* display: block; */
+  visibility:visible;
+  opacity:1;
+  transition:visibility 0.3s linear,opacity 0.3s linear;
 
+}
 
 .sub-menu {
-  display: none;
+  transition:visibility 0.3s linear,opacity 0.3s linear;
+  /* display: none; */
+  opacity:0;
+  visibility: hidden;
   position: absolute;
 
   padding: 8px;
 
+
   background-color: rgb(16, 16, 16);
+  border-bottom: 7px solid #b8b8b8;
+  border-right: 5px solid #b8b8b8;
+
+  transition: all 0.3s ease-in-out;
+}
+
+.sub-menu .menu-item{
+  margin-bottom: 5px;
+  margin-top: 1px;
+  border-bottom: 1px solid #000;
+  border-width: 0px;
+  transition: all 0.2s ease-in-out;
+
+}
+
+.sub-menu .menu-item:hover{
+  border-bottom: 1px solid #b8b8b8;
+  border-width:100% ;
+  transition: all 0.2s ease-in-out;
 }

@@ -26,9 +26,9 @@ _gameDifficulty = 1;
 
 
 
-console.log("Número de minas: " + _CONFIG_MINES);
-console.log("Número de celdas: " + _CONFIG_TOTAL_CELLS);
-console.log("Número de celdas a descubrir: " + cellsUndiscovered);
+// console.log("Número de minas: " + _CONFIG_MINES);
+// console.log("Número de celdas: " + _CONFIG_TOTAL_CELLS);
+// console.log("Número de celdas a descubrir: " + cellsUndiscovered);
 
 // Creación del tablero
 
@@ -36,34 +36,19 @@ function createBoard(gameDifficulty) {
 
 
     clearGameData();
+    changeDifficulty(gameDifficulty);
 
-    switch (gameDifficulty) {
-        case 0:
-            _gameDifficulty = 0 ;
-            _CONFIG_ROWS = 8;
-            _CONFIG_CELLS = 8;
-            break;
-        case 1:
-            _gameDifficulty = 1 ;
-            _CONFIG_ROWS = 10;
-            _CONFIG_CELLS = 10;
-            break;
-        case 2:
-            _gameDifficulty = 2 ;
-            _CONFIG_ROWS = 10;
-            _CONFIG_CELLS = 15;
-            break;
-    }
+    // console.log("Número de minas: " + _CONFIG_MINES);
 
-
-
-    table = document.querySelector("#table");
-    table.addEventListener('contextmenu', (event) => {
+    tableBoard = document.querySelector("#tableBoard");
+    tableBoard.addEventListener('contextmenu', (event) => {
         event.preventDefault();
     });
-    thead = document.querySelector("thead");
-    thead.textContent = "";
-    tbody = document.querySelector("tbody");
+
+
+    theadBoard = tableBoard.querySelector("thead");
+    theadBoard.textContent = "";
+    tbody = tableBoard.querySelector("tbody");
     tbody.textContent = "";
 
     let displayScoreBoardCnt = document.querySelector("#scoreBoard").querySelectorAll("section")
@@ -82,7 +67,7 @@ function createBoard(gameDifficulty) {
     for (let headCell = 0; headCell <= _CONFIG_CELLS; headCell++) {
         let td = document.createElement("td");
         td.textContent = headCell == 0 ? " " : cellHeadPosition++;
-        thead.appendChild(td);
+        theadBoard.appendChild(td);
     }
 
     for (let rows = 0; rows < _CONFIG_ROWS; rows++) {
@@ -299,22 +284,6 @@ function checkMinesEmpty(rowPositionDOM, cellPositionDOM, cellRowParentDOM) {
     });
 
 
-    // // Evaluamos si estamos dentro del tablero
-
-    // if ( rowPositionDOM == 0 ) 
-    // {
-    //     console.log("Estamos en el borde superior");
-    // } else if ( rowPositionDOM == _CONFIG_ROWS ){ 
-    //     console.log("Estamos en el borde inferior");
-    // }
-
-    // if ( cellPositionDOM == 1 ) 
-    // {
-    //     console.log("Estamos en el borde izquierdo");
-    // } else if ( cellPositionDOM == _CONFIG_CELLS ){
-    //     console.log("Estamos en el borde derecho");
-    // }
-
 }
 
 function cellOptions(event) {
@@ -397,21 +366,18 @@ function finalGame(type) {
     let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("section")[1];
 
     if (type == "win") {
-        alert("¡Has ganado! en " + playTime + " minutos");
 
-        let div = document.createElement("div");
-        let h1 = document.createElement("h1");
-        h1.textContent = "¡Has ganado! en " + playTime + " minutos";
-        div.appendChild(h1);
 
-        modalContent(div);
-        showHideModal();
-
-        gameStatus = "win"; 
+        gameStatus = "win";
         changeSmile("win");
+        stopCounter();
+
+        modalContent(addScore(_gameDifficulty, playTime));
+        showHideModal();
 
     } else {
         gameStatus = "lose";
+        
         let div = document.createElement("div");
         div.classList.add("js-modal-lose");
         let h1 = document.createElement("h1");
@@ -419,19 +385,15 @@ function finalGame(type) {
         let article = document.createElement("article");
         article.textContent = "Te han faltado " + flags + " minas 💣";
         let p = document.createElement("p");
-        p.textContent =  cellsUndiscovered + " celdas ⬛ sin descubrir 🔎🧐";
+        p.textContent = cellsUndiscovered + " celdas ⬛ sin descubrir 🔎🧐";
         article.appendChild(p);
         p = document.createElement("p");
         p.textContent = "😘¡Inténtalo de nuevo!";
 
-
-        div.append(h1,article,p);
-
-        
-
+        div.append(h1, article, p);
 
         changeSmile("lose");
-
+        console.log("Has perdido en " + playTime + " minutos");
         modalContent(div);
         showHideModal();
     }
@@ -448,20 +410,13 @@ function finalGame(type) {
 
     });
 
-    savePoints(_gameDifficulty, playTime, "User");
+    // savePoints(_gameDifficulty, playTime);
 }
 
-function clearGameData(){
+function clearGameData() {
 
     gameStarted ? (stopCounter(), playTime = 0) : null;
 
-    // Datos del juego
-    _CONFIG_TOTAL_CELLS = _CONFIG_ROWS * _CONFIG_CELLS;
-    _CONFIG_MINES = Math.floor((_CONFIG_ROWS * _CONFIG_CELLS) / 6);
-
-    cellsUndiscovered = _CONFIG_TOTAL_CELLS - _CONFIG_MINES;
-
-    flags = _CONFIG_MINES;
 
     locationMines = [];
     selectedCell = null;
@@ -473,12 +428,12 @@ function clearGameData(){
 
     modalStatus = false;
 
-   changeSmile("idle");
+    changeSmile("idle");
 
 }
 
 
-function changeSmile(smileType){
+function changeSmile(smileType) {
     let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("section")[1];
     switch (smileType) {
         case "smile":
@@ -508,37 +463,60 @@ function changeSmile(smileType){
     }
 }
 
-function savePoints(level, points, user){
-
-
+function savePoints(level, points, player) {
     // item
     gameData = [{
         points: points,
-        user: user
+        player: player
     }];
-    console.log("datos del juego ",gameData);
-    
+   // console.log("datos del juego ", gameData);
+
     let storageData = localStorage.getItem(level);
     if (storageData) {
-        
+
         storageData = JSON.parse(storageData);
         storageData.push(gameData[0]);
         gameData = storageData;
-    
+
         localStorage.setItem(level, JSON.stringify(gameData));
 
     } else {
         localStorage.setItem(level, JSON.stringify(gameData));
     }
 }
+function changeDifficulty(gameDifficulty) {
 
+    switch (gameDifficulty) {
+        case 0:
+            _gameDifficulty = 0;
+            _CONFIG_ROWS = 8;
+            _CONFIG_CELLS = 8;
+            break;
+        case 1:
+            _gameDifficulty = 1;
+            _CONFIG_ROWS = 10;
+            _CONFIG_CELLS = 10;
+            break;
+        case 2:
+            _gameDifficulty = 2;
+            _CONFIG_ROWS = 10;
+            _CONFIG_CELLS = 15;
+            break;
+
+    }
+    _CONFIG_TOTAL_CELLS = _CONFIG_ROWS * _CONFIG_CELLS;
+    _CONFIG_MINES = Math.floor((_CONFIG_ROWS * _CONFIG_CELLS) / 6);
+
+    cellsUndiscovered = _CONFIG_TOTAL_CELLS - _CONFIG_MINES;
+
+    flags = _CONFIG_MINES;
+}
 createBoard(1);
 
 let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("section")[1];
 scoreBoardSmile.addEventListener('click', () => {
     createBoard();
 });
-
 
 
 //TODO: Registrar puntuaciones = tiempo que tardas
