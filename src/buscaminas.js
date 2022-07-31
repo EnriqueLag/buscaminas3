@@ -478,18 +478,18 @@ function changeDifficulty(gameDifficulty) {
     switch (gameDifficulty) {
         case 0:
             _gameDifficulty = 0;
-            _CONFIG_ROWS = 2;
-            _CONFIG_CELLS = 2;
+            _CONFIG_ROWS = 8;
+            _CONFIG_CELLS = 8;
             break;
         case 1:
             _gameDifficulty = 1;
-            _CONFIG_ROWS = 2;
-            _CONFIG_CELLS = 2;
+            _CONFIG_ROWS = 10;
+            _CONFIG_CELLS = 10;
             break;
         case 2:
             _gameDifficulty = 2;
-            _CONFIG_ROWS = 2;
-            _CONFIG_CELLS = 2;
+            _CONFIG_ROWS = 10;
+            _CONFIG_CELLS = 15;
             break;
 
     }
