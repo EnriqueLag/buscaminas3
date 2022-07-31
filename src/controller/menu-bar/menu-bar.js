@@ -26,7 +26,7 @@ menuItemCnt.forEach(item => {
         case "Intermedio":
             item.addEventListener("click", () => {
                 createBoard(1);
-                console.log(item);
+                // console.log(item);
             });
             break;
         case "Difícil":
@@ -228,8 +228,8 @@ function addScore(_gameDifficulty,playTime){
     
     addScore_container.addEventListener("submit",  (event) => { 
         event.preventDefault();
-        console.log(playTime)
-        savePoints(_gameDifficulty, playTime, playerNameInput.value);
+        // console.log(playTime)
+        savePoints(_gameDifficulty, playTime, addScore_playerNameInput.value);
         showHideModal();
     });
 
