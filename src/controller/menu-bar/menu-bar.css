@@ -1,4 +1,9 @@
 header{
+  position: fixed;
+  width: 100%;
+  margin-bottom: 200px;
+  padding-bottom: 200px;
+
   background-color: rgb(16, 16, 16);
   padding: 2px;
   border-bottom: 1px solid #181818;

@@ -4,7 +4,7 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
 }
 
 /*
@@ -95,6 +95,8 @@ main {
   width: 582px;
   height: 513px;
   margin: auto;
+
+  padding-top: 60px;
 }
 
 .container-table {
@@ -180,6 +182,20 @@ td {
   content: "💣";
 }
 
+.js-idle::before {
+  content: "😴";
+}
+.js-smile::before {
+  content: "😀";
+}
+
+.js-win::before {
+  content: "😎";
+}
+
+.js-lose::before {
+  content: "😭";
+}
 
 .js-hidden {
   display: none;

@@ -1,4 +1,3 @@
-const shell = require('electron').shell
 
 // Datos del tablero
 _CONFIG_ROWS = 10;
@@ -23,6 +22,8 @@ gameStatus = "";
 
 modalStatus = false;
 
+_gameDifficulty = 1;
+
 
 
 console.log("Número de minas: " + _CONFIG_MINES);
@@ -33,43 +34,30 @@ console.log("Número de celdas a descubrir: " + cellsUndiscovered);
 
 function createBoard(gameDifficulty) {
 
+
+    clearGameData();
+
     switch (gameDifficulty) {
         case 0:
+            _gameDifficulty = 0 ;
             _CONFIG_ROWS = 8;
             _CONFIG_CELLS = 8;
             break;
         case 1:
+            _gameDifficulty = 1 ;
             _CONFIG_ROWS = 10;
             _CONFIG_CELLS = 10;
             break;
         case 2:
+            _gameDifficulty = 2 ;
             _CONFIG_ROWS = 10;
             _CONFIG_CELLS = 15;
             break;
     }
 
-    gameStarted ? (stopCounter(), playTime = 0) : null;
-
-    // Datos del juego
-    _CONFIG_TOTAL_CELLS = _CONFIG_ROWS * _CONFIG_CELLS;
-    _CONFIG_MINES = Math.floor((_CONFIG_ROWS * _CONFIG_CELLS) / 6);
-
-    cellsUndiscovered = _CONFIG_TOTAL_CELLS - _CONFIG_MINES;
-
-    flags = _CONFIG_MINES;
-
-    locationMines = [];
-    selectedCell = null;
-
-    gameStarted = false;
-    playTime = 0;
-
-    gameStatus = "";
-
-    modalStatus = false;
 
 
-    table = document.querySelector("table");
+    table = document.querySelector("#table");
     table.addEventListener('contextmenu', (event) => {
         event.preventDefault();
     });
@@ -83,7 +71,11 @@ function createBoard(gameDifficulty) {
     let displayMinesCnt = displayScoreBoardCnt[0].querySelector("div");
     displayMinesCnt.textContent = "Total de 💣: " + flags;
 
-    let displayTimeCnt = displayScoreBoardCnt[1].querySelector("div");
+    let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("section")[1];
+    scoreBoardSmile.classList.add("js-ilde");
+
+
+    let displayTimeCnt = displayScoreBoardCnt[2].querySelector("div");
     displayTimeCnt.textContent = "00:00";
 
     let cellHeadPosition = 0;
@@ -138,7 +130,7 @@ function createBoard(gameDifficulty) {
 
 }
 
-createBoard();
+
 // Función para calcular el estado de las celdas
 
 function cellState(event, cell) {
@@ -377,6 +369,8 @@ function stopCounter() {
 
 function startCounter() {
 
+    changeSmile("smile");
+
     counter = window.setInterval(() => {
         if (gameStatus != "lose") {
             playTime++;
@@ -389,7 +383,7 @@ function startCounter() {
             seconds = seconds < 10 ? "0" + seconds : seconds;
 
             // Mostramos el tiempo en el marcador
-            let displayTimeCnt = document.querySelector("#scoreBoard").querySelectorAll("section")[1].querySelector("div");
+            let displayTimeCnt = document.querySelector("#scoreBoard").querySelectorAll("section")[2].querySelector("div");
             displayTimeCnt.textContent = minutes + ":" + seconds;
         }
     }, 1000);
@@ -399,15 +393,47 @@ function startCounter() {
 function finalGame(type) {
 
     stopCounter();
+
+    let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("section")[1];
+
     if (type == "win") {
         alert("¡Has ganado! en " + playTime + " minutos");
-        console.warn("¡Has ganado! en " + playTime + " segundos");
-        gameStatus = "win"; 
 
+        let div = document.createElement("div");
+        let h1 = document.createElement("h1");
+        h1.textContent = "¡Has ganado! en " + playTime + " minutos";
+        div.appendChild(h1);
+
+        modalContent(div);
+        showHideModal();
+
+        gameStatus = "win"; 
+        changeSmile("win");
 
     } else {
         gameStatus = "lose";
-        alert("¡Has perdido! te han faltado " + flags + " minas y " + cellsUndiscovered + " celdas");
+        let div = document.createElement("div");
+        div.classList.add("js-modal-lose");
+        let h1 = document.createElement("h1");
+        h1.textContent = "😭¡Has perdido!😭 ";
+        let article = document.createElement("article");
+        article.textContent = "Te han faltado " + flags + " minas 💣";
+        let p = document.createElement("p");
+        p.textContent =  cellsUndiscovered + " celdas ⬛ sin descubrir 🔎🧐";
+        article.appendChild(p);
+        p = document.createElement("p");
+        p.textContent = "😘¡Inténtalo de nuevo!";
+
+
+        div.append(h1,article,p);
+
+        
+
+
+        changeSmile("lose");
+
+        modalContent(div);
+        showHideModal();
     }
 
     let cells = document.querySelectorAll(".js-cell-undiscovered");
@@ -422,24 +448,101 @@ function finalGame(type) {
 
     });
 
+    savePoints(_gameDifficulty, playTime, "User");
+}
+
+function clearGameData(){
+
+    gameStarted ? (stopCounter(), playTime = 0) : null;
+
+    // Datos del juego
+    _CONFIG_TOTAL_CELLS = _CONFIG_ROWS * _CONFIG_CELLS;
+    _CONFIG_MINES = Math.floor((_CONFIG_ROWS * _CONFIG_CELLS) / 6);
+
+    cellsUndiscovered = _CONFIG_TOTAL_CELLS - _CONFIG_MINES;
+
+    flags = _CONFIG_MINES;
+
+    locationMines = [];
+    selectedCell = null;
+
+    gameStarted = false;
+    playTime = 0;
+
+    gameStatus = "";
+
+    modalStatus = false;
+
+   changeSmile("idle");
 
 }
 
-function externalLinks() {
-    let externalLinks = document.querySelectorAll('a[href]');
-    externalLinks.forEach(link => {
-        link.addEventListener("click", (event) => {
-            event.preventDefault();
-            shell.openExternal(link.href)
-        });
-    });
+
+function changeSmile(smileType){
+    let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("section")[1];
+    switch (smileType) {
+        case "smile":
+            scoreBoardSmile.classList.remove("js-idle");
+            scoreBoardSmile.classList.remove("js-win");
+            scoreBoardSmile.classList.remove("js-lose");
+            scoreBoardSmile.classList.add("js-smile");
+            break;
+        case "win":
+            scoreBoardSmile.classList.remove("js-idle");
+            scoreBoardSmile.classList.remove("js-smile");
+            scoreBoardSmile.classList.remove("js-lose");
+            scoreBoardSmile.classList.add("js-win");
+            break;
+        case "lose":
+            scoreBoardSmile.classList.remove("js-idle");
+            scoreBoardSmile.classList.remove("js-smile");
+            scoreBoardSmile.classList.remove("js-win");
+            scoreBoardSmile.classList.add("js-lose");
+            break;
+        case "idle":
+            scoreBoardSmile.classList.remove("js-smile");
+            scoreBoardSmile.classList.remove("js-win");
+            scoreBoardSmile.classList.remove("js-lose");
+            scoreBoardSmile.classList.add("js-idle");
+            break;
+    }
 }
 
+function savePoints(level, points, user){
 
-//TODO: Añadir carita central animada
+
+    // item
+    gameData = [{
+        points: points,
+        user: user
+    }];
+    console.log("datos del juego ",gameData);
+    
+    let storageData = localStorage.getItem(level);
+    if (storageData) {
+        
+        storageData = JSON.parse(storageData);
+        storageData.push(gameData[0]);
+        gameData = storageData;
+    
+        localStorage.setItem(level, JSON.stringify(gameData));
+
+    } else {
+        localStorage.setItem(level, JSON.stringify(gameData));
+    }
+}
+
+createBoard(1);
+
+let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("section")[1];
+scoreBoardSmile.addEventListener('click', () => {
+    createBoard();
+});
+
+
 
 //TODO: Registrar puntuaciones = tiempo que tardas
 //TODO: Por categorías (fácil, medio, difícil)
 //TODO: Ordenar de menos a más.
-//TODO: js-app-scoreBoard 
+
 

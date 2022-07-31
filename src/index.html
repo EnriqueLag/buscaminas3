@@ -16,56 +16,49 @@
     <header>
         <nav>
             <ul class="menu-bar">
-                <li>
+                <li class="menu-item">
                     Juego
                     <ul class="sub-menu">
-                        <li>Nuevo Juego</li>
-                        <li>Salir</li>
+                        <li class="menu-item">Nuevo juego</li>
+                        <li class="menu-item">Salir</li>
                     </ul>
                 </li>
-                <li>
+                <li class="menu-item">
                     Dificultad
                     <ul class="sub-menu">
-                        <li>Fácil</li>
-                        <li>Intermedio</li>
-                        <li>Difícil</li>
+                        <li class="menu-item">Fácil</li>
+                        <li class="menu-item">Intermedio</li>
+                        <li class="menu-item">Difícil</li>
                     </ul>
                 </li>
-                <li>Puntuaciones</li>
-                <li>Acerca de</li>
+                <li class="menu-item">Puntuaciones</li>
+                <li class="menu-item">Acerca de</li>
             </ul>
         </nav>
     </header>
-    <div class="js-app-modal js-hidden">
 
-        <article>
-            <div></div>
-        </article>
-
-    </div>
-    <div class="js-app-scoreBoard ">
-
-        <article>
-            <form>
-                <p>
-                    <label for="name">Nombre:</label>
-                    <input type="text" id="name" placeholder="AAA" maxlength="3">
-                    <label for="score">Puntuación: </label>
-                    <input type="text" id="score" disabled>
-                </p>
-                <input type="submit" value="Guardar">
-                <input type="button" value="Cancelar">
-            </form>
-        </article>
-
-    </div>
 
     <main>
+        <div class="js-app-modal js-hidden">
+
+            <article>
+                <div>
+                    
+                </div>
+                <input type="button" id="modal-cancel" value="Salir">
+            </article>
+    
+        </div>
+
         <div class="container" id="scoreBoard">
             <section>
                 <div>
                     Total de 💣
                 </div>
+            </section>
+
+            <section>
+                
             </section>
 
             <section>
@@ -75,7 +68,7 @@
             </section>
         </div>
         <div class="container-table">
-            <table>
+            <table id="table">
                 <thead></thead>
                 <tbody></tbody>
             </table>
