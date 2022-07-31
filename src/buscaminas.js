@@ -517,10 +517,3 @@ let scoreBoardSmile = document.querySelector("#scoreBoard").querySelectorAll("se
 scoreBoardSmile.addEventListener('click', () => {
     createBoard();
 });
-
-
-//TODO: Registrar puntuaciones = tiempo que tardas
-//TODO: Por categorías (fácil, medio, difícil)
-//TODO: Ordenar de menos a más.
-
-
