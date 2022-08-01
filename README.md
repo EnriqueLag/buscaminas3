@@ -1,37 +1,30 @@
-## Welcome to GitHub Pages
+## Proyecto Buscaminas - Web
 
-You can use the [editor on GitHub](https://github.com/altaskur/Buscaminas/edit/web/README.md) to maintain and preview the content for your website in Markdown files.
+🤗 Bienvenidas/os a la versión de navegador, de la práctica para JavaScript 💣 Buscaminas.
+En esta práctica se han manejado:
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+- Arrays Bidimensionales
+- Funciones recursivas
+- Manejado LocalStorage
+- Creación de un Modal para el Front-End
+- Manejo de Método setInterval()
 
-### Markdown
+🎮 ♟ Puedes probar el resultado en la <a href="https://altaskur.github.io/Buscaminas/src" tarjet="_blank"> Versión live </a>.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+⚜ Tambien puedes ver la versión multiplataforma echa en node-js con la libreria Electron-js [Versión principal](https://github.com/altaskur/buscaminas).
 
-```markdown
-Syntax highlighted code block
+📚 Puedes descargarte el proyecto desde la zona de [Releases ](https://github.com/altaskur/Buscaminas/releases).
 
-# Header 1
-## Header 2
-### Header 3
 
-- Bulleted
-- List
+## 💙 Agradecimientos
+Seguidores que han ayudado activamente al proyecto:
 
-1. Numbered
-2. List
 
-**Bold** and _Italic_ and `Code` text
+[@bypepe77](https://github.com/bypepe77), [@ilyabakhlin](https://github.com/ilyabakhlin), [@jmorenoponce](https://github.com/jmorenoponce), @Eh_Garci.
 
-[Link](url) and ![Image](src)
-```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+## 📧 Redes y apoyo
+- 🐤 [Twitter](https://twitter.com/Altaskur)
+- 📺 [Twitch](https://www.twitch.tv/altaskur)
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/altaskur/Buscaminas/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
