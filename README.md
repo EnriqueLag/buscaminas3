@@ -20,7 +20,7 @@ En esta práctica se han manejado:
 Seguidores que han ayudado activamente al proyecto:
 
 
-[@bypepe77](https://github.com/bypepe77), [@ilyabakhlin](https://github.com/ilyabakhlin), [@jmorenoponce](https://github.com/jmorenoponce), @Eh_Garci.
+[@bypepe77](https://github.com/bypepe77), [@ilyabakhlin](https://github.com/ilyabakhlin), [DayHieN](https://github.com/DayHieN), [@jmorenoponce](https://github.com/jmorenoponce), @Eh_Garci.
 
 
 ## 📧 Redes y apoyo
