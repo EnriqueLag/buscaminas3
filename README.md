@@ -1,4 +1,8 @@
 ## Proyecto Buscaminas - Electron
+[<img src="https://img.shields.io/github/last-commit/altaskur/Buscaminas?style=for-the-badge"></img>](https://github.com/altaskur/Buscaminas/commits/main) 
+[<img src="https://img.shields.io/github/license/altaskur/Buscaminas?style=for-the-badge">](https://github.com/altaskur/Buscaminas/blob/main/LICENSE) 
+[<img src="https://img.shields.io/github/languages/top/altaskur/Buscaminas?style=for-the-badge">](https://github.com/altaskur/Buscaminas) 
+[<img src="https://img.shields.io/github/v/tag/altaskur/Buscaminas?label=Release&style=for-the-badge">](https://github.com/altaskur/Buscaminas/releases) 
 
 🤗 Bienvenidas/os a la versión de escritorio, de la práctica para JavaScript 💣 Buscaminas.
 En esta práctica se han manejado:
@@ -28,5 +32,6 @@ Seguidores que han ayudado activamente al proyecto:
 
 
 ## 📧 Redes y apoyo
-- 🐤 [Twitter](https://twitter.com/Altaskur)
-- 📺 [Twitch](https://www.twitch.tv/altaskur)
+[<img src="https://img.shields.io/github/followers/altaskur?label=GitHub&color=inactive&logo=Github&style=flat-square"></img>](https://github.com/altaskur)
+[<img src="https://img.shields.io/twitter/follow/altaskur?label=Twitter&logo=Twitter&style=flat-square"></img>](https://twitter.com/Altaskur)
+[<img src="https://img.shields.io/twitch/status/altaksur?label=Twitch - stream &logo=twitch&style=flat-square"></img>](https://www.twitch.tv/altaskur)
