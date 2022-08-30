@@ -1,4 +1,5 @@
 ## Proyecto Buscaminas - Electron
+
 [<img src="https://img.shields.io/github/last-commit/altaskur/Buscaminas?style=for-the-badge"></img>](https://github.com/altaskur/Buscaminas/commits/main) 
 [<img src="https://img.shields.io/github/license/altaskur/Buscaminas?style=for-the-badge">](https://github.com/altaskur/Buscaminas/blob/main/LICENSE) 
 [<img src="https://img.shields.io/github/languages/top/altaskur/Buscaminas?style=for-the-badge">](https://github.com/altaskur/Buscaminas) 
